@@ -1,0 +1,1 @@
+/Users/yui_tang/.config/fisherman/bobthefish/functions/__bobthefish_display_colors.fish
