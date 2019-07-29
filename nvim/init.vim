@@ -45,3 +45,5 @@ endif
 
 "End dein Scripts-------------------------
 
+" airline_themeの設定
+let g:airline_theme='powerlineish'
