@@ -28,6 +28,9 @@ repo = 'hashivim/vim-terraform'
 repo = 'scrooloose/nerdtree'
 
 [[plugins]]
+repo = 'Xuyuanp/nerdtree-git-plugin'
+
+[[plugins]]
 repo = 'Shougo/vimproc.vim'
 hook_post_update = '''
   if dein#util#_is_windows()
