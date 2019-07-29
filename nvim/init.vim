@@ -9,7 +9,6 @@ set termguicolors               "TrueColor対応"
 set list listchars=tab:\▸\-     " 不可視文字を可視化(タブが「▸-」と表示される)
 set whichwrap=b,s,h,l,<,>,[,],~ " カーソルの左右移動で行末から次の行の行頭への移動が可能になる
 set cursorline                  " カーソルラインをハイライト"
-autocmd VimEnter * execute 'NERDTree' " Open nerdtree automatically
 
 " Swap : and ; when normal mode
 nnoremap ; :
@@ -53,6 +52,7 @@ endif
 
 "End dein Scripts-------------------------
 
+autocmd VimEnter * NERDTree "Open nerdtree automatically
 
 let g:airline_theme='powerlineish'  " airline_themeの設定
 let g:indentLine_char = '¦'         " display indent line
