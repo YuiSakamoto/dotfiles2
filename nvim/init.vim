@@ -10,6 +10,10 @@ set list listchars=tab:\▸\-     " 不可視文字を可視化(タブが「▸-
 set whichwrap=b,s,h,l,<,>,[,],~ " カーソルの左右移動で行末から次の行の行頭への移動が可能になる
 set cursorline                  " カーソルラインをハイライト"
 
+" Swap : and ; when normal mode
+nnoremap ; :
+nnoremap : ;
+
 "dein Scripts-----------------------------
 if &compatible
   set nocompatible               " Be iMproved
