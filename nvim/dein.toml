@@ -25,6 +25,9 @@ repo = 'Yggdroot/indentLine'
 repo = 'hashivim/vim-terraform'
 
 [[plugins]]
+repo = 'scrooloose/nerdtree'
+
+[[plugins]]
 repo = 'Shougo/vimproc.vim'
 hook_post_update = '''
   if dein#util#_is_windows()
