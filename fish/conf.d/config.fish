@@ -38,4 +38,3 @@ set -g theme_powerline_fonts yes
 set -g fish_prompt_pwd_dir_length 8
 set -g theme_project_dir_length 8
 set -g theme_newline_cursor yes
-

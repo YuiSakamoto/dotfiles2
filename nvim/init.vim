@@ -1,6 +1,6 @@
 set number                      "行番号を表示
 set autoindent                  "改行時に自動でインデントする
-set tabstop=2                   "タブを何文字の空白に変換するか 
+set tabstop=2                   "タブを何文字の空白に変換するか
 set shiftwidth=2                "自動インデント時に入力する空白の数
 set expandtab                   "タブ入力を空白に変換
 set clipboard=unnamed           "yank した文字列をクリップボードにコピー
@@ -53,7 +53,7 @@ endif
 "End dein Scripts-------------------------
 
 autocmd VimEnter * NERDTree "Open nerdtree automatically
-
+autocmd BufWritePre * :%s/\s\+$//e "Delete space in the end of line
 let g:airline_theme='powerlineish'  " airline_themeの設定
 let g:indentLine_char = '¦'         " display indent line
 let g:terraform_fmt_on_save = 1     " checking terraform format when save
