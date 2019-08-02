@@ -1,4 +1,5 @@
 alias k='kubectl'
+alias kcx='kubectx'
 alias d='docker'
 alias gcl='gcloud'
 alias less='less -r'
