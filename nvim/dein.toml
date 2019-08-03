@@ -31,6 +31,9 @@ repo = 'scrooloose/nerdtree'
 repo = 'Xuyuanp/nerdtree-git-plugin'
 
 [[plugins]]
+repo = 'fatih/vim-go'
+
+[[plugins]]
 repo = 'Shougo/vimproc.vim'
 hook_post_update = '''
   if dein#util#_is_windows()
