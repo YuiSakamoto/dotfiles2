@@ -1,8 +1,12 @@
-alias k='kubectl'
-alias kcx='kubectx'
 alias d='docker'
 alias gcl='gcloud'
 alias less='less -r'
+
+# kubernetes
+alias k='kubectl'
+alias kg="kubectl get"
+alias kd="kubectl describe"
+alias kcx='kubectx'
 
 # open intellij
 alias ij='open -b com.jetbrains.intellij'
