@@ -3,8 +3,3 @@ if [ -f '/Users/yui_tang/google-cloud-sdk/path.fish.inc' ]; . '/Users/yui_tang/g
 
 # set up alias for hub as git
 eval (hub alias -s)
-
-# Load anyenv automatically by adding
-# the following to ~/.config/fish/config.fish:
-
-status --is-interactive; and source (anyenv init -|psub)
