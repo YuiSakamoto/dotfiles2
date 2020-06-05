@@ -19,18 +19,27 @@ if &compatible
   set nocompatible               " Be iMproved
 endif
 
-" Required:
-set runtimepath+=/Users/yui_tang/.cache/dein/repos/github.com/Shougo/dein.vim
+" プラグインが実際にインストールされるディレクトリ
+let s:dein_dir = expand('~/.cache/dein')
+" dein.vim 本体
+let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
+" dein.vim がなければ github から落としてくる
+if &runtimepath !~# '/dein.vim'
+  if !isdirectory(s:dein_repo_dir)
+    execute '!git clone https://github.com/Shougo/dein.vim' s:dein_repo_dir
+  endif
+  execute 'set runtimepath^=' . fnamemodify(s:dein_repo_dir, ':p')
+endif
 
 " Required:
-if dein#load_state('/Users/yui_tang/.cache/dein')
-  call dein#begin('/Users/yui_tang/.cache/dein')
+if dein#load_state(s:dein_dir)
+  call dein#begin(s:dein_dir)
   call dein#load_toml('~/.config/nvim/dein.toml', {'lazy': 0})
   call dein#load_toml('~/.config/nvim/dein_lazy.toml', {'lazy': 1})
 
   " Let dein manage dein
   " Required:
-  call dein#add('/Users/yui_tang/.cache/dein/repos/github.com/Shougo/dein.vim')
+  call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
 
   " Add or remove your plugins here like this:
   "call dein#add('Shougo/neosnippet.vim')

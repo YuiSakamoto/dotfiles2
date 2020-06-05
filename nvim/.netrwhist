@@ -1,3 +1,6 @@
 let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =1
+let g:netrw_dirhistcnt =4
+let g:netrw_dirhist_4='/Users/yui.sakamoto/ghq/github.com/YuiSakamoto/dotfiles2/nvim'
+let g:netrw_dirhist_3='/Users/yui.sakamoto/git/admin.gochikuru.com/htdocs'
+let g:netrw_dirhist_2='/Users/yui.sakamoto/ghq/github.com/YuiSakamoto/dotfiles2/.git'
 let g:netrw_dirhist_1='/Users/yui_tang/src/github.com/YuiSakamoto/dotfiles2/fish/conf.d'

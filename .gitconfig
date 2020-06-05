@@ -23,7 +23,7 @@
 [pull]
   rebase = true
 [ghq]
-	root = /Users/yui_tang/src
+	root = ~/src
 [alias]
   s   = status
   st  = status

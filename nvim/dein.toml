@@ -28,9 +28,6 @@ repo = 'hashivim/vim-terraform'
 repo = 'scrooloose/nerdtree'
 
 [[plugins]]
-repo = 'Xuyuanp/nerdtree-git-plugin'
-
-[[plugins]]
 repo = 'fatih/vim-go'
 
 [[plugins]]
