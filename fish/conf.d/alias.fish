@@ -32,7 +32,14 @@ alias gc='git commit'
 alias gci='git commit -a'
 alias gd='git diff'
 
+# Docker
+alias d='docker'
+alias dc='docker-compose'
+
 # du/df
 alias du="du -h"
 alias df="df -h"
 alias duh="du -h ./ --max-depth=1"
+
+# terraform
+alias tf="terraform"
