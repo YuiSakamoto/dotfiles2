@@ -37,6 +37,7 @@
   po  = push origin         # push origin
   pof = push -f origin      # force
   pu  = push -u origin      # push origin and set upstream
+  please = push --force-with-lease --force-if-includes # push force with lease if includes
   # rebase
   rbm = rebase --merge master       # masterへのrebaseはよく使うのでalias
   rbd = rebase --merge develop
