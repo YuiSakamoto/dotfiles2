@@ -18,3 +18,8 @@ if status is-interactive
 end
 
 source /opt/homebrew/opt/asdf/libexec/asdf.fish
+
+# kpp(kill path process)
+function kpp
+  kill -9 (lsof -t -i :$argv)
+end
