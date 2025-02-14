@@ -17,7 +17,7 @@
   quotepath = false
 [merge]
   tool = vimdiff
-  ff = false
+  ff = true
 [branch]
   autosetuprebase = always
 [pull]
@@ -142,3 +142,5 @@
 	smudge = git-lfs smudge -- %f
 [init]
 	defaultBranch = main
+[safe]
+	directory = /go/src/github.com/newmohq/newmo-app

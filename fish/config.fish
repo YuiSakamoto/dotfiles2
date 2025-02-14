@@ -23,3 +23,11 @@ source /opt/homebrew/opt/asdf/libexec/asdf.fish
 function kpp
   kill -9 (lsof -t -i :$argv)
 end
+
+# pnpm
+set -gx PNPM_HOME "/Users/yui.sakamoto/Library/pnpm"
+if not string match -q -- $PNPM_HOME $PATH
+  set -gx PATH "$PNPM_HOME" $PATH
+end
+# pnpm end
+mise activate fish | source
