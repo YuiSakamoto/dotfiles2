@@ -19,3 +19,5 @@ set -gx PKG_CONFIG_PATH "/usr/local/opt/zlib/lib/pkgconfig" $PKG_CONFIG_PATH
 # set -x PATH $PATH:/usr/local/bin/terraform
 fish_add_path $HOME/.composer/vendoer/bin
 fish_add_path /usr/local/bin/terraform
+fish_add_path $HOME/bin
+fish_add_path /opt/homebrew/opt/libpq/bin
