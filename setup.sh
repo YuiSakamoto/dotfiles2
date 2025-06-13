@@ -9,7 +9,7 @@ for file in ${DOT_FILES[@]}; do
   )/$file $HOME/$file
 done
 
-DOT_FILES_TO_CONFIG_DIR=(fish nvim karabiner wezterm starship.toml)
+DOT_FILES_TO_CONFIG_DIR=(fish nvim karabiner wezterm starship.toml claude)
 
 if [[ ! -d ~/.config ]]; then
   mkdir ~/.config
