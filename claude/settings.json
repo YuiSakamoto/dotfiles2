@@ -1,0 +1,187 @@
+{
+  "permissions": {
+    "allow": [
+      // Monorepoツール (pnpm特化)
+      "Bash(pnpm --filter:*)",
+      "Bash(pnpm -r:*)",
+      "Bash(pnpm --parallel:*)",
+      "Bash(pnpm workspace:*)",
+
+      // TypeScript/Next.js開発 (pnpm基準)
+      "Bash(pnpm dev)",
+      "Bash(pnpm build)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm run:*)",
+      "Bash(pnpx:*)",
+
+      // Fish shell特有コマンド
+      "Bash(fish -c:*)",
+
+      // Go開発
+      "Bash(go build:*)",
+      "Bash(go test:*)",
+      "Bash(go mod:*)",
+      "Bash(go work:*)",
+      "Bash(go generate:*)",
+
+      // iOS/Android開発
+      "Bash(pod install)",
+      "Bash(xcodebuild:*)",
+      "Bash(flutter:*)",
+      "Bash(./gradlew:*)",
+
+      // Git操作
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git checkout:*)",
+      "Bash(git merge:*)",
+      "Bash(git rebase:*)",
+
+      // ファイル操作
+      "Edit(apps/**)",
+      "Edit(packages/**)",
+      "Edit(*.md)",
+      "Edit(*.json)",
+      "Edit(*.yaml)",
+      "Edit(*.yml)",
+      "Read(**)",
+
+      // Mac固有ツール
+      "Bash(brew:*)",
+      "Bash(fnm:*)",
+      "Bash(code:*)",
+
+      // 音を鳴らす - 常に許可
+      "Bash(afplay *)",
+
+      // MCP統合
+      "mcp__github__*",
+      "mcp__filesystem__*",
+      "mcp__playwright__*"
+    ],
+    "deny": [
+      // 破壊的操作の防止
+      "Bash(rm -rf:*)",
+      "Bash(sudo:*)",
+      "Edit(node_modules/**)",
+      "Edit(.git/**)",
+      "Edit(vendor/**)",
+
+      // セキュリティ
+      "Read(.env*)",
+      "Read(*.key)",
+      "Read(*.pem)",
+      "Edit(.env*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)"
+    ]
+  },
+
+  "ignorePatterns": [
+    // pnpm関連除外
+    "node_modules/**",
+    "**/node_modules/**",
+    ".pnpm-store/**",
+    ".pnpm-cache/**",
+    ".pnpm-state/**",
+    "**/pnpm-lock.yaml.tmp",
+    "vendor/**",
+    "**/vendor/**",
+
+    // ビルド成果物
+    "**/dist/**",
+    "**/build/**",
+    "**/.next/**",
+    "**/out/**",
+
+    // Go関連
+    "**/bin/**",
+    "**/pkg/**",
+    "**/*.exe",
+    "**/*.test",
+
+    // iOS/Android
+    "*.ipa",
+    "*.apk",
+    "*.aab",
+    "ios/build/**",
+    "android/build/**",
+    "android/.gradle/**",
+    "ios/Pods/**",
+    "*.dSYM/**",
+    "*.framework/**",
+    ".expo/**",
+
+    // キャッシュ・ログ
+    "**/.cache/**",
+    "**/coverage/**",
+    "**/*.log",
+    "**/logs/**",
+    "**/.nyc_output/**",
+
+    // セキュリティ
+    "**/.env*",
+    "**/*.key",
+    "**/*.pem",
+    "**/*.p12",
+    "**/*.keystore",
+    "**/secrets/**",
+    "**/.secrets/**"
+  ],
+
+  "env": {
+    // パフォーマンス最適化
+    "CLAUDE_CODE_THINKING_BUDGET": "10000",
+    "CLAUDE_HARDWARE_ACCELERATION": "true",
+    "CLAUDE_MEMORY_LIMIT": "32768",
+
+    // Fish shell環境変数
+    "SHELL": "/opt/homebrew/bin/fish",
+    "FISH_CONFIG_DIR": "~/.config/fish",
+
+    // pnpm最適化
+    "PNPM_HOME": "~/.local/share/pnpm",
+    "PNPM_STORE_DIR": "~/.pnpm-store",
+    "PNPM_CACHE_DIR": "~/.pnpm-cache",
+    "PNPM_STATE_DIR": "~/.pnpm-state",
+
+    // 開発ツール
+    "TURBO_TELEMETRY_DISABLED": "1",
+    "NEXT_TELEMETRY_DISABLED": "1"
+  },
+
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_TOKEN_HERE"
+      }
+    },
+    "playwright-mcp": {
+      "command": "npx",
+      "args": ["@playwright/mcp@latest"]
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem"],
+      "env": {
+        "FILESYSTEM_ROOT": "miyu1012"
+      }
+    }
+  },
+
+  "customCommands": {
+    "test-all": "pnpm -r test",
+    "build-all": "pnpm --filter './apps/*' build",
+    "dev-all": "pnpm --filter './apps/*' dev --parallel",
+    "clean-all": "pnpm -r clean && pnpm store prune",
+    "update-deps": "pnpm update -r --interactive",
+    "deploy": "Please prepare deployment for $ARGUMENTS environment using pnpm",
+    "review": "Review this PR for security, performance, and pnpm workspace best practices"
+  }
+}
