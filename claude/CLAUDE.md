@@ -170,6 +170,19 @@ afplay /System/Library/Sounds/Glass.aiff
 afplay /System/Library/Sounds/Sosumi.aiff
 ```
 
+### Approval Request Notification
+
+承認が必要な場合は必ず音を鳴らしてください：
+```bash
+afplay /System/Library/Sounds/Hero.aiff
+```
+
+**承認を求める前に必ず実行**:
+- バージョンアップデートの確認時
+- 破壊的な変更の前
+- 重要な設計判断時
+- セキュリティ関連の変更時
+
 ## 🚀 Performance Tips
 
 ### For Claude Code
