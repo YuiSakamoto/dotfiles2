@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# プロジェクトディレクトリ名から安全なディレクトリ名を生成
+PROJECT_DIR=$(pwd | sed 's/[\/.]/-/g')
+
+# Claude プロジェクトパス
+CLAUDE_PROJECT_PATH="$HOME/.claude/projects/$PROJECT_DIR"
+CONTINUE_FLAG=""
+
+# 既存のプロジェクトがあれば継続フラグを追加
+if [ -d "$CLAUDE_PROJECT_PATH" ]; then
+    CONTINUE_FLAG="--continue"
+fi
+
+# 環境変数でモデルを指定できるように（デフォルトは指定なし）
+MODEL_FLAG=""
+if [ -n "$CLAUDE_MODEL" ]; then
+    MODEL_FLAG="--model $CLAUDE_MODEL"
+fi
+
+# テレメトリやエラーレポートを無効化してClaude Codeを起動
+# /usr/local/bin/claudeを明示的に指定してエイリアスループを防ぐ
+DISABLE_AUTOUPDATER=1 \
+DISABLE_ERROR_REPORTING=1 \
+DISABLE_TELEMETRY=1 \
+    /usr/local/bin/claude $MODEL_FLAG $CONTINUE_FLAG "$@"
