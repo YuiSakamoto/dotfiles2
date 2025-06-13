@@ -204,13 +204,14 @@ afplay /System/Library/Sounds/Hero.aiff
 ### Essential Aliases
 
 ```bash
-g    → git
-k    → kubectl
-d    → docker
-dc   → docker-compose
-tf   → terraform
-v    → nvim
-ij   → open IntelliJ IDEA
+g      → git
+k      → kubectl
+d      → docker
+dc     → docker-compose
+tf     → terraform
+v      → nvim
+ij     → open IntelliJ IDEA
+claude → プロジェクト単位で管理されたClaude Code（自動継続機能付き）
 ```
 
 You can know more from `~/.config/fish/conf.d/alias.fish`

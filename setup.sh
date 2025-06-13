@@ -22,7 +22,7 @@ for file in ${DOT_FILES_TO_CONFIG_DIR[@]}; do
   )/$file $HOME/.config/$file
 done
 
-BIN_FILES=(ssm)
+BIN_FILES=(ssm claude-project)
 
 for file in ${BIN_FILES[@]}; do
   sudo ln -s $(
