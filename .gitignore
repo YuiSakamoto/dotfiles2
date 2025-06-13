@@ -13,3 +13,12 @@
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+
+# Cursor関連のファイル
+.cursorrules
+.specstory
+yui_tang.md
+personal.mdc
+
+# Secrets
+fish/conf.d/secrets.fish
