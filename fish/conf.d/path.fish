@@ -7,8 +7,8 @@ set -gx PKG_CONFIG_PATH "/usr/local/opt/openssl@1.1/lib/pkgconfig" $PKG_CONFIG_P
 set -gx PKG_CONFIG_PATH "/usr/local/opt/zlib/lib/pkgconfig" $PKG_CONFIG_PATH
 
 # set -x PATH $HOME/.anyenv/bin $PATH
-fish_add_path $HOME/.anyenv/bin
-eval (anyenv init - | source)
+# fish_add_path $HOME/.anyenv/bin
+# eval (anyenv init - | source)
 
 # set -x GOENV_ROOT $HOME/.goenv
 # set -x PATH $GOENV_ROOT/bin:$PATH
