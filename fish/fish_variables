@@ -2,9 +2,9 @@
 # VERSION: 3.0
 SETUVAR ZO_CMD:zo
 SETUVAR Z_CMD:z
-SETUVAR Z_DATA:/Users/yui\x2esakamoto/\x2elocal/share/z/data
-SETUVAR Z_DATA_DIR:/Users/yui\x2esakamoto/\x2elocal/share/z
-SETUVAR Z_EXCLUDE:/Users/yui\x2esakamoto\x2esakamoto
+SETUVAR Z_DATA:/Users/yui_tang/\x2elocal/share/z/data
+SETUVAR Z_DATA_DIR:/Users/yui_tang/\x2elocal/share/z
+SETUVAR Z_EXCLUDE:/Users/yui_tang
 SETUVAR __fish_init_2_39_8:\x1d
 SETUVAR __fish_init_2_3_0:\x1d
 SETUVAR __fish_init_3_x:\x1d
@@ -51,5 +51,5 @@ SETUVAR fish_pager_color_selected_background:\x2d\x2dbackground\x3dbrblack
 SETUVAR fish_pager_color_selected_completion:\x1d
 SETUVAR fish_pager_color_selected_description:\x1d
 SETUVAR fish_pager_color_selected_prefix:\x1d
-SETUVAR fish_user_paths:/Users/yui_tang/bin\x1e/opt/homebrew/opt/libpq/bin\x1e/Users/yui\x2esakamoto/bin\x1e/usr/local/opt/bzip2/bin
+SETUVAR fish_user_paths:/Users/yui_tang/bin\x1e/opt/homebrew/opt/libpq/bin\x1e/usr/local/opt/bzip2/bin
 SETUVAR fisher_active_prompt:bobthefish
