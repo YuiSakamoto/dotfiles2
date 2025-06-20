@@ -172,11 +172,19 @@
       "env": {
         "FILESYSTEM_ROOT": "miyu1012"
       }
+    },
+    "cloudflare": {
+      "command": "npx",
+      "args": ["mcp-remote", "https://browser.mcp.cloudflare.com/sse"]
+    },
+    "Figma": {
+      "url": "http://127.0.0.1:3845/sse"
     }
   },
 
   "customCommands": {
-    "test-all": "pnpm -r test",
+    lint-all: "pnpm -w run lint && pnpm typecheck",
+    test-career: "pnpm run test:unit:run && playwright_nextbuild:local:run",
     "build-all": "pnpm --filter './apps/*' build",
     "dev-all": "pnpm --filter './apps/*' dev --parallel",
     "clean-all": "pnpm -r clean && pnpm store prune",

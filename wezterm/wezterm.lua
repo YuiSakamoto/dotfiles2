@@ -1,4 +1,5 @@
 local wezterm = require 'wezterm';
+local home = os.getenv("HOME")
 
 return {
   -- font = wezterm.font 'Fira Code',
@@ -13,7 +14,7 @@ return {
   adjust_window_size_when_changing_font_size = false,
   window_background_opacity = 0.8,
   text_background_opacity = 0.4,
-  window_background_image = '/Users/yui.sakamoto/Downloads/1500x500.jpeg',
+  window_background_image = home .. '/Downloads/1500x500.jpeg',
   window_background_image_hsb = {
     -- Darken the background image by reducing it to 1/3rd
     brightness = 0.3,
