@@ -61,7 +61,7 @@ endif
 
 "End dein Scripts-------------------------
 
-autocmd VimEnter * NERDTree "Open nerdtree automatically
+" autocmd VimEnter * NERDTree "Open nerdtree automatically
 autocmd BufWritePre * :%s/\s\+$//e "Delete space in the end of line
 let g:airline_theme='powerlineish'  " airline_themeの設定
 let g:indentLine_char = '¦'         " display indent line

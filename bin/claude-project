@@ -23,4 +23,4 @@ fi
 DISABLE_AUTOUPDATER=1 \
 DISABLE_ERROR_REPORTING=1 \
 DISABLE_TELEMETRY=1 \
-    /usr/local/bin/claude $MODEL_FLAG $CONTINUE_FLAG "$@"
+    /opt/homebrew/bin/claude $MODEL_FLAG $CONTINUE_FLAG "$@"
