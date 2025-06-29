@@ -131,6 +131,38 @@
   # Delete merged branch
   delete-merged = !"git branch --merged | grep -v '*' | xargs -I % git branch -d %"
   dmb = delete-merged
+  # worktree作成（新規ブランチ）
+  wta = "!f() { git worktree add .git/worktrees/$1 -b $1; }; f"
+  # worktree作成（既存ブランチ）
+  wtae = "!f() { git worktree add .git/worktrees/$1 $1; }; f"
+  # worktreeに移動
+  wtg = "!f() { cd .git/worktrees/$1; }; f"
+  # worktree一覧
+  wtl = worktree list
+  # worktree削除
+  wtr = "!f() { git worktree remove .git/worktrees/$1; }; f"
+  # 基本のエイリアス表示
+  a = !git config --get-regexp alias | sed 's/alias\\.//' | sort
+
+  # 詳細表示（エイリアス名と内容を整形）
+  aa = !git config --get-regexp alias | sed -E 's/alias\\.([^ ]+) (.+)/\\1\\t=> \\2/' | sort | column -t -s $'\\t'
+
+  # グループ化して表示（プレフィックスでグループ化）
+  aaa = "!f() { \
+      echo '\\033[1;36m📚 Git Aliases\\033[0m'; \
+      echo ''; \
+      git config --get-regexp alias | \
+      sed -E 's/alias\\.([^ ]+) (.+)/\\1|\\2/' | \
+      sort | \
+      awk -F'|' '{ \
+          prefix = substr($1, 1, index($1 \"-\", \"-\") - 1); \
+          if (prefix != lastPrefix && index($1, \"-\") > 0) { \
+              print \"\\n\\033[1;33m[\" toupper(prefix) \"]\\033[0m\"; \
+              lastPrefix = prefix; \
+          } \
+          printf \"  \\033[32m%-20s\\033[0m %s\\n\", $1, $2; \
+      }'; \
+  }; f"
 [http]
   sslVerify = false
 [credential]
