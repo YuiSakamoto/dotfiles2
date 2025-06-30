@@ -256,4 +256,10 @@ pnpm store prune
 3. Search existing code for examples
 4. Ask for clarification before assuming
 
+### TypeScript Tips
+
+- 極力letは使わない！
+- errorは極力throwせずにresult型を作ってreturnする
+- pnpm -w run lint && pnpm typecheck && pnpm buildは必ず通るようにして。
+
 Remember: "The more context you can give Claude, the more effective it'll be"
