@@ -131,12 +131,11 @@
   # Delete merged branch
   delete-merged = !"git branch --merged | grep -v '*' | xargs -I % git branch -d %"
   dmb = delete-merged
+
+  # WorkTree
   # worktree作成（新規ブランチ）
   wta = "!f() { git worktree add .git/worktrees/$1 -b $1; }; f"
   # worktree作成（既存ブランチ）
-  wtae = "!f() { git worktree add .git/worktrees/$1 $1; }; f"
-  # worktreeに移動
-  wtg = "!f() { cd .git/worktrees/$1; }; f"
   # worktree一覧
   wtl = worktree list
   # worktree削除

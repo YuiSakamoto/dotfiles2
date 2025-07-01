@@ -15,6 +15,11 @@ function __bobthefish_title_user -S -d 'Display actual user if different from $d
 end
 
 function fish_title
+    # tmux pane titleが設定されている場合は、fishのタイトル設定をスキップ
+    if test -n "$TMUX"
+        return
+    end
+    
     __bobthefish_title_user
 
     if [ "$theme_title_display_process" = 'yes' ]
