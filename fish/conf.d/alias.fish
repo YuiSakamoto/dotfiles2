@@ -22,6 +22,7 @@ alias tma0='tmux attach -t 0'
 alias tma1='tmux attach -t 1'
 alias tma2='tmux attach -t 2'
 alias tml='tmux list-sessions'
+alias tpt='tmux_pane_title'
 
 # git
 alias g='git'
