@@ -12,6 +12,7 @@
 │   ├── commit.md     # /commit コマンド
 │   ├── reviews-fix.md # /reviews-fix コマンド
 │   └── workflow-fix.md # /workflow-fix コマンド
+├── mcp-setup.sh      # MCPサーバーセットアップスクリプト
 ├── .env.example      # 環境変数の例
 └── README.md         # このファイル
 ```
@@ -29,11 +30,34 @@
    source ~/.claude/.env
    ```
 
+3. **MCPサーバーのセットアップ**
+   ```bash
+   ~/.claude/mcp-setup.sh
+   ```
+
 ## カスタムコマンド
 
 - `/commit` - 会話のコンテキストを考慮して適切なコミットメッセージを生成
 - `/reviews-fix` - PRレビューコメントを分析して修正を実施
 - `/workflow-fix` - GitHub Actionsのエラーを診断して修正
+
+## MCP (Model Context Protocol)
+
+MCPサーバーは新しいコマンドで管理されます：
+
+```bash
+# ユーザースコープでサーバーを追加
+claude mcp add <name> -s user <command>
+
+# プロジェクトスコープでサーバーを追加
+claude mcp add <name> -s project <command>
+
+# サーバー一覧を確認
+claude mcp list
+
+# サーバーを削除
+claude mcp remove <name>
+```
 
 ## 設定のカスタマイズ
 
@@ -46,7 +70,8 @@ your-project/
 └── .claude/
     ├── settings.json    # プロジェクト設定（チームで共有）
     ├── settings.local.json # 個人設定（gitignoreに追加）
-    └── CLAUDE.md       # プロジェクト固有の指示
+    ├── CLAUDE.md       # プロジェクト固有の指示
+    └── .mcp.json       # プロジェクト固有のMCPサーバー
 ```
 
 ### 設定の優先順位
@@ -68,3 +93,4 @@ your-project/
   - モダンな開発環境に対応した設定
   - カスタムコマンド追加
   - 自動フォーマット・Lint機能
+  - MCP設定を別ファイルに分離（新仕様対応）
