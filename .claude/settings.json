@@ -1,0 +1,86 @@
+{
+  // 基本設定
+  "theme": "dark",
+  "verbose": true,
+  "autoUpdates": true,
+  "preferredNotifChannel": "desktop",
+  
+  // モデル設定（必要に応じてプロジェクトごとにオーバーライド可能）
+  "model": "claude-opus-4-20250514",
+  
+  // グローバル権限設定
+  "permissions": {
+    "bash": "allow",
+    "edit": "allow",
+    "read": "allow",
+    "write": "allow",
+    "webFetch": "allow",
+    "webSearch": "allow",
+    "grep": "allow",
+    "glob": "allow",
+    "ls": "allow"
+  },
+  
+  // グローバル環境変数
+  "env": {
+    "EDITOR": "vim",
+    "LANG": "ja_JP.UTF-8",
+    "LC_ALL": "ja_JP.UTF-8"
+  },
+  
+  // グローバルフック設定
+  "hooks": {
+    // ファイル編集前に自動フォーマット
+    "edit.pre": [
+      {
+        "glob": "*.{js,jsx,ts,tsx,json,css,md}",
+        "command": "test -f package.json && pnpm prettier --write {file} || true"
+      },
+      {
+        "glob": "*.go",
+        "command": "test -f go.mod && go fmt {file} || true"
+      },
+      {
+        "glob": "*.py", 
+        "command": "test -f pyproject.toml && uv run ruff format {file} || true"
+      }
+    ],
+    
+    // ファイル編集後にLint実行
+    "edit.post": [
+      {
+        "glob": "*.{js,jsx,ts,tsx}",
+        "command": "test -f package.json && pnpm eslint --fix {file} || true"
+      },
+      {
+        "glob": "*.py",
+        "command": "test -f pyproject.toml && uv run ruff check --fix {file} || true"
+      }
+    ],
+    
+    // bashコマンド実行前のチェック
+    "bash.pre": [
+      {
+        // npmコマンドの使用を防ぐ（pnpm推奨）
+        "pattern": "^(npm|npx)\\s",
+        "command": "echo '⚠️  pnpmを使用してください (pnpm / pnpx)' && exit 1"
+      },
+      {
+        // yarnコマンドの使用を防ぐ（pnpm推奨）
+        "pattern": "^yarn\\s",
+        "command": "echo '⚠️  pnpmを使用してください' && exit 1"
+      }
+    ],
+    
+    // マルチファイル編集前のチェック
+    "multiEdit.pre": [
+      {
+        "glob": "*.{js,jsx,ts,tsx}",
+        "command": "test -f tsconfig.json && pnpm tsc --noEmit || true"
+      }
+    ]
+  },
+  
+  // カスタムコマンドディレクトリ
+  "commandsDirectory": "~/.claude/commands"
+}

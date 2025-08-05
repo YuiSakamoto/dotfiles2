@@ -18,6 +18,9 @@ set -gx PKG_CONFIG_PATH "/usr/local/opt/zlib/lib/pkgconfig" $PKG_CONFIG_PATH
 
 # set -x PATH $PATH:/usr/local/bin:$HOME/.composer/vendor/bin
 # set -x PATH $PATH:/usr/local/bin/terraform
+# asdf configuration
+source /opt/homebrew/opt/asdf/libexec/asdf.fish
+
 fish_add_path $HOME/.composer/vendoer/bin
 fish_add_path /usr/local/bin/terraform
 fish_add_path $HOME/bin

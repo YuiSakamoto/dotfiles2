@@ -9,6 +9,16 @@ for file in ${DOT_FILES[@]}; do
   )/$file $HOME/$file
 done
 
+# .claudeディレクトリのシンボリックリンクを作成
+# 既存の.claudeを削除してからシンボリックリンクを作成
+if [ -e "$HOME/.claude" ] || [ -L "$HOME/.claude" ]; then
+  rm -rf "$HOME/.claude"
+fi
+ln -s $(
+  cd $(dirname $0) || exit
+  pwd
+)/.claude $HOME/.claude
+
 DOT_FILES_TO_CONFIG_DIR=(fish nvim karabiner wezterm starship.toml claude)
 
 if [[ ! -d ~/.config ]]; then
