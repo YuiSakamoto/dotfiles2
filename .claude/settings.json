@@ -6,7 +6,7 @@
   "preferredNotifChannel": "desktop",
   
   // モデル設定（必要に応じてプロジェクトごとにオーバーライド可能）
-  "model": "claude-opus-4-20250514",
+  "model": "claude-opus-4-1-20250805",
   
   // グローバル権限設定
   "permissions": {
