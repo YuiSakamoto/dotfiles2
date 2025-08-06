@@ -19,8 +19,8 @@ if [ -n "$CLAUDE_MODEL" ]; then
 fi
 
 # テレメトリやエラーレポートを無効化してClaude Codeを起動
-# /usr/local/bin/claudeを明示的に指定してエイリアスループを防ぐ
+# PATHから claude コマンドを実行
 DISABLE_AUTOUPDATER=1 \
 DISABLE_ERROR_REPORTING=1 \
 DISABLE_TELEMETRY=1 \
-    /Users/yui_tang/.asdf/shims/claude $MODEL_FLAG $CONTINUE_FLAG "$@"
+    claude $MODEL_FLAG $CONTINUE_FLAG "$@"
