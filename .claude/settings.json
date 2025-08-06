@@ -1,14 +1,5 @@
 {
-  // 基本設定
-  "theme": "dark",
-  "verbose": true,
-  "autoUpdates": true,
-  "preferredNotifChannel": "desktop",
-  
-  // モデル設定（必要に応じてプロジェクトごとにオーバーライド可能）
   "model": "claude-opus-4-1-20250805",
-  
-  // グローバル権限設定
   "permissions": {
     "bash": "allow",
     "edit": "allow",
@@ -20,168 +11,45 @@
     "glob": "allow",
     "ls": "allow"
   },
-  
-  // グローバル環境変数
   "env": {
     "EDITOR": "vim",
     "LANG": "ja_JP.UTF-8",
     "LC_ALL": "ja_JP.UTF-8"
   },
-  
-  // グローバルフック設定
   "hooks": {
-    // ========== ファイル編集前フック ==========
-    "edit.pre": [
-      // JavaScript/TypeScript: Prettier自動フォーマット
+    "PostToolUse": [
       {
-        "glob": "*.{js,jsx,ts,tsx,json,css,md}",
-        "command": "test -f package.json && pnpm prettier --write {file} || true"
-      },
-      // Go: gofmt自動フォーマット
-      {
-        "glob": "*.go",
-        "command": "test -f go.mod && go fmt {file} || true"
-      },
-      // Python: Ruff自動フォーマット
-      {
-        "glob": "*.py", 
-        "command": "test -f pyproject.toml && uv run ruff format {file} || true"
-      },
-      // YAML: yamllint警告チェック
-      {
-        "glob": "*.{yml,yaml}",
-        "command": "which yamllint >/dev/null && yamllint -d relaxed {file} || true"
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/commands/format-file.sh"
+          }
+        ]
       }
     ],
-    
-    // ========== ファイル編集後フック ==========
-    "edit.post": [
-      // TypeScript: ESLint自動修正
+    "PreToolUse": [
       {
-        "glob": "*.{js,jsx,ts,tsx}",
-        "command": "test -f package.json && pnpm eslint --fix {file} || true"
-      },
-      // Python: Ruff自動修正
-      {
-        "glob": "*.py",
-        "command": "test -f pyproject.toml && uv run ruff check --fix {file} || true"
-      },
-      // Go: 静的解析実行
-      {
-        "glob": "*.go",
-        "command": "test -f go.mod && (which golangci-lint >/dev/null && golangci-lint run {file} || true)"
-      },
-      // Terraform: フォーマットチェック
-      {
-        "glob": "*.tf",
-        "command": "which terraform >/dev/null && terraform fmt {file} || true"
-      },
-      // package.json更新時: 依存関係インストール
-      {
-        "glob": "package.json",
-        "command": "echo '📦 package.jsonが更新されました。pnpm installを実行してください' && pnpm install --silent"
-      },
-      // go.mod更新時: 依存関係更新
-      {
-        "glob": "go.mod",
-        "command": "echo '📦 go.modが更新されました' && go mod tidy"
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/commands/check-command.sh"
+          }
+        ]
       }
     ],
-    
-    // ========== ファイル作成後フック ==========
-    "write.post": [
-      // 新規TypeScriptファイル: インポート整理
+    "Stop": [
       {
-        "glob": "*.{ts,tsx}",
-        "command": "test -f tsconfig.json && pnpm eslint --fix {file} || true"
-      },
-      // 新規テストファイル: テンプレート適用の提案
-      {
-        "glob": "*.test.{js,ts,tsx}",
-        "command": "echo '🧪 新しいテストファイルが作成されました: {file}'"
-      },
-      // 実行可能ファイル: 権限設定
-      {
-        "glob": "*.sh",
-        "command": "chmod +x {file} && echo '✅ 実行権限を付与しました: {file}'"
-      }
-    ],
-    
-    // ========== bashコマンド実行前フック ==========
-    "bash.pre": [
-      // パッケージマネージャー制御
-      {
-        "pattern": "^(npm|npx)\\s",
-        "command": "echo '⚠️  pnpmを使用してください (pnpm / pnpx)' && exit 1"
-      },
-      {
-        "pattern": "^yarn\\s",
-        "command": "echo '⚠️  pnpmを使用してください' && exit 1"
-      },
-      // 危険なコマンドの警告
-      {
-        "pattern": "^rm\\s+-rf\\s+/",
-        "command": "echo '🚨 危険: ルートディレクトリからの削除は禁止されています' && exit 1"
-      },
-      {
-        "pattern": "^(sudo\\s+)?rm\\s+-rf\\s+\\*",
-        "command": "echo '⚠️  警告: 再帰的な削除を実行しようとしています。本当に実行しますか？' && read -p 'yes/no: ' confirm && [ \"$confirm\" = \"yes\" ]"
-      },
-      // git操作の安全性チェック
-      {
-        "pattern": "^git\\s+push\\s+.*--force",
-        "command": "echo '⚠️  force pushを実行しようとしています。本当に実行しますか？' && read -p 'yes/no: ' confirm && [ \"$confirm\" = \"yes\" ]"
-      },
-      // コミット前のテスト実行提案
-      {
-        "pattern": "^git\\s+commit",
-        "command": "echo '💡 ヒント: テストを実行しましたか？ (続行するにはEnterを押してください)' && read"
-      }
-    ],
-    
-    // ========== bashコマンド実行後フック ==========
-    "bash.post": [
-      // テスト失敗時の自動デバッグ情報収集
-      {
-        "pattern": "^(pnpm|npm|yarn)\\s+test",
-        "command": "if [ $? -ne 0 ]; then echo '❌ テストが失敗しました。エラーログを確認してください'; fi"
-      },
-      // ビルド成功時の通知
-      {
-        "pattern": "^(pnpm|npm|yarn)\\s+build",
-        "command": "if [ $? -eq 0 ]; then echo '🎉 ビルドが成功しました！'; fi"
-      }
-    ],
-    
-    // ========== マルチファイル編集前フック ==========
-    "multiEdit.pre": [
-      // TypeScript: 型チェック
-      {
-        "glob": "*.{ts,tsx}",
-        "command": "test -f tsconfig.json && echo '🔍 型チェックを実行中...' && pnpm tsc --noEmit || true"
-      },
-      // 大量ファイル編集の警告
-      {
-        "glob": "*",
-        "command": "echo '📝 複数ファイルを編集します。バックアップは取りましたか？'"
-      }
-    ],
-    
-    // ========== ユーザープロンプト送信フック ==========
-    "user-prompt-submit": [
-      // 開発環境の自動チェック
-      {
-        "pattern": ".*実装.*|.*修正.*|.*追加.*",
-        "command": "echo '🔧 開発タスクを検出しました。環境をチェック中...' && which git >/dev/null && git status --short || true"
-      },
-      // セキュリティチェック
-      {
-        "pattern": ".*(password|token|secret|key).*",
-        "command": "echo '🔐 セキュリティ: 機密情報は環境変数で管理してください'"
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/commands/notify-completion.sh"
+          }
+        ]
       }
     ]
   },
-  
-  // カスタムコマンドディレクトリ
   "commandsDirectory": "~/.claude/commands"
 }
