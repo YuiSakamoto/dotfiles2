@@ -2,6 +2,76 @@
 # Claude Codeカスタムコマンド: /commit
 # 会話のコンテキストを考慮してコミットを作成する
 
+# 現在のブランチを確認
+CURRENT_BRANCH=$(git branch --show-current)
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@' || echo "main")
+
+echo "🔍 現在のブランチ: $CURRENT_BRANCH"
+
+# mainブランチにいる場合は警告
+if [ "$CURRENT_BRANCH" = "$DEFAULT_BRANCH" ] || [ "$CURRENT_BRANCH" = "main" ] || [ "$CURRENT_BRANCH" = "master" ]; then
+    echo "⚠️  メインブランチ ($CURRENT_BRANCH) で作業しています！"
+    echo ""
+    
+    # 変更内容から適切なブランチ名を提案
+    echo "📝 変更内容を確認してブランチ名を提案します..."
+    
+    # 簡易的な変更ファイルのリストから推測
+    CHANGED_FILES=$(git status --porcelain | awk '{print $2}' | head -3)
+    
+    # 日付ベースのデフォルトブランチ名
+    DATE_PREFIX=$(date +%Y%m%d)
+    
+    # 変更内容に基づく提案（実際はClaudeが会話コンテキストから生成）
+    if echo "$CHANGED_FILES" | grep -q "claude"; then
+        SUGGESTED_BRANCH="feat/${DATE_PREFIX}-claude-commands"
+    elif echo "$CHANGED_FILES" | grep -q "fish"; then
+        SUGGESTED_BRANCH="feat/${DATE_PREFIX}-fish-config"
+    elif echo "$CHANGED_FILES" | grep -q "nvim"; then
+        SUGGESTED_BRANCH="feat/${DATE_PREFIX}-nvim-config"
+    else
+        SUGGESTED_BRANCH="feat/${DATE_PREFIX}-update"
+    fi
+    
+    echo "💡 推奨ブランチ名: $SUGGESTED_BRANCH"
+    echo ""
+    echo "新しいブランチを作成して移動しますか？"
+    echo "1) はい、推奨ブランチ名を使用 ($SUGGESTED_BRANCH)"
+    echo "2) はい、カスタムブランチ名を入力"
+    echo "3) いいえ、このままメインブランチで続行"
+    echo "4) キャンセル"
+    echo ""
+    echo "選択してください (1-4): "
+    read -r BRANCH_CHOICE
+    
+    case "$BRANCH_CHOICE" in
+        1)
+            git checkout -b "$SUGGESTED_BRANCH"
+            echo "✅ ブランチ '$SUGGESTED_BRANCH' を作成して切り替えました。"
+            echo ""
+            ;;
+        2)
+            echo "ブランチ名を入力してください (例: feat/add-feature, fix/bug-123)："
+            read -r CUSTOM_BRANCH
+            git checkout -b "$CUSTOM_BRANCH"
+            echo "✅ ブランチ '$CUSTOM_BRANCH' を作成して切り替えました。"
+            echo ""
+            ;;
+        3)
+            echo "⚠️  注意: メインブランチで作業を続行します。"
+            echo ""
+            ;;
+        4)
+            echo "❌ コミットをキャンセルしました。"
+            exit 1
+            ;;
+        *)
+            echo "❌ 無効な選択です。コミットをキャンセルしました。"
+            exit 1
+            ;;
+    esac
+fi
+
 # 現在の変更状況を確認
 echo "🔍 現在の変更を確認しています..."
 
