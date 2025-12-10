@@ -25,9 +25,13 @@ function kpp
 end
 
 # pnpm
-set -gx PNPM_HOME "$HOME/Library/pnpm"
+set -gx PNPM_HOME "/Users/yui.sakamoto/Library/pnpm"
 if not string match -q -- $PNPM_HOME $PATH
   set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
 mise activate fish | source
+fish_add_path $HOME/.local/bin
+
+# Added by Antigravity
+fish_add_path /Users/yui.sakamoto/.antigravity/antigravity/bin

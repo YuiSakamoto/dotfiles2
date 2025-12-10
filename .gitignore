@@ -14,12 +14,14 @@
 .idea/**/dictionaries
 .idea/**/shelf
 
-# Cursor関連のファイル
+# AI関連のファイル
 .cursorrules
 .specstory
 yui_tang.md
 personal.mdc
 .cursorindexingignore
+.gwq.toml
+.serena
 
 # Fish shell generated files
 fish/fish_variables

@@ -1,5 +1,9 @@
 {
-  "model": "claude-opus-4-1-20250805",
+  "env": {
+    "EDITOR": "vim",
+    "LANG": "ja_JP.UTF-8",
+    "LC_ALL": "ja_JP.UTF-8"
+  },
   "permissions": {
     "bash": "allow",
     "edit": "allow",
@@ -11,41 +15,25 @@
     "glob": "allow",
     "ls": "allow"
   },
-  "env": {
-    "EDITOR": "vim",
-    "LANG": "ja_JP.UTF-8",
-    "LC_ALL": "ja_JP.UTF-8"
-  },
   "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Write|Edit|MultiEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/commands/format-file.sh"
-          }
-        ]
-      }
-    ],
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/commands/check-command.sh"
-          }
-        ]
-      }
-    ],
     "Stop": [
       {
         "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "$CLAUDE_PROJECT_DIR/.claude/commands/notify-completion.sh"
+            "command": "$HOME/.claude/commands/notify-completion.sh"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/commands/notify-waiting-input.sh"
           }
         ]
       }
