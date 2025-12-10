@@ -1,12 +1,5 @@
 {
   "permissions": {
-    "allow": [
-      "Bash(find:*)",
-      "Bash(ls:*)",
-      "Bash(afplay:*)",
-      "Bash(node:*)",
-      "Bash(asdf plugin:*)"
-    ],
-    "deny": []
+    "bash": "allow"
   }
 }
