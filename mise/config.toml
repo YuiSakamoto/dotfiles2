@@ -2,7 +2,7 @@
 
 [tools]
 # Node.js - プロジェクトごとに指定がない場合のデフォルトバージョン
-node = "22.20.0"
+node = "24.11.1"
 
 # Python
 python = "3.12"
@@ -13,7 +13,7 @@ go = "latest"
 # Rust
 rust = "stable"
 uv = "0.6.13"
-pnpm = "10.22.0"
+pnpm = "10.25.0"
 
 # 必要に応じて他のツールを追加
 # java = "21"

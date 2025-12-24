@@ -10,14 +10,17 @@ if status is-interactive
     # set -x PATH $HOME/.anyenv/bin $PATH
     # fish_add_path $HOME/.anyenv/bin
     # eval (anyenv init - | source)
-
-    eval (ssh-agent -c)
-    ssh-add ~/.ssh/id_ed25519
-    tm
+    # (disabled) ssh-agent is managed by macOS launchd/Keychain
+    # eval (ssh-agent -c)
+    # (disabled) ssh-add is handled via AddKeysToAgent/UseKeychain
+    # ssh-add ~/.ssh/id_ed25519
+    # (disabled) do not auto-attach tmux on shell startup
+    # tm
     starship init fish | source
+    
+    # asdf/mise は interactive のときだけ初期化（git hook 等の非対話シェルを軽くする）
+    source /opt/homebrew/opt/asdf/libexec/asdf.fish
 end
-
-source /opt/homebrew/opt/asdf/libexec/asdf.fish
 
 # kpp(kill path process)
 function kpp
@@ -30,7 +33,6 @@ if not string match -q -- $PNPM_HOME $PATH
   set -gx PATH "$PNPM_HOME" $PATH
 end
 # pnpm end
-mise activate fish | source
 fish_add_path $HOME/.local/bin
 
 # Added by Antigravity

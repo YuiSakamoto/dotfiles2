@@ -1,4 +1,12 @@
-scan_timeout = 10
+command_timeout = 2000
+scan_timeout = 50
+
+[git_status]
+disabled = true
+[git_state]
+disabled = true
+[git_metrics]
+disabled = true
 
 [character]
 error_symbol = "[❯](bold red)"
