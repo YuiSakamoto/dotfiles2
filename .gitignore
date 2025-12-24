@@ -42,3 +42,16 @@ nvim/.netrwhist
 claude/local/
 
 
+
+# Generated backups
+fish/config.fish.bak.*
+
+# Claude (generated)
+.claude/debug/
+.claude/history.jsonl
+.claude/ide/
+.claude/plugins/
+.claude/telemetry/
+claude/projects/
+claude/statsig/
+claude/todos/
