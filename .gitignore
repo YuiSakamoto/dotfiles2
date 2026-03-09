@@ -32,26 +32,28 @@ fish/conf.d/secrets.fish
 # Neovim
 nvim/.netrwhist
 
-# Claude
+# Claude Code (ユーザー生成・キャッシュ)
 .claude/settings.local.json
+.claude/.update.lock
+.claude/image-cache/
+.claude/tasks/
 .claude/todos/
 .claude/projects/
 .claude/shell-snapshots/
 .claude/statsig/
 .claude/local/
-claude/local/
-
-
-
-# Generated backups
-fish/config.fish.bak.*
-
-# Claude (generated)
 .claude/debug/
 .claude/history.jsonl
 .claude/ide/
 .claude/plugins/
 .claude/telemetry/
-claude/projects/
-claude/statsig/
-claude/todos/
+.claude/backups/
+.claude/cache/
+.claude/file-history/
+.claude/plans/
+.claude/session-env/
+.claude/memory/
+claude/local/
+
+# Generated backups
+fish/config.fish.bak.*
