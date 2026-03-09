@@ -1,5 +1,13 @@
 {
   "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: 2026年ベストプラクティスに基づくClaude Code設定追加\n\n- code-reviewer agent を追加（コード品質・セキュリティレビュー用）\n- 検証基準セクションを追加（fish, git, shellcheck等）\n- セッション管理ルールを追加\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git push:*)",
+      "Bash(echo \"=== .claude/ ディレクトリ ===\" && find .claude -not -path '.claude/backups/*' -not -path '.claude/cache/*' -not -path '.claude/file-history/*' -not -path '.claude/plans/*' -not -path '.claude/projects/*' -not -path '.claude/local/*' -not -path '.claude/shell-snapshots/*' -not -path '.claude/debug/*' -not -path '.claude/ide/*' -not -path '.claude/plugins/*' -not -path '.claude/telemetry/*' -not -path '.claude/todos/*' -not -path '.claude/session-env/*' -not -path '.claude/memory/*' -not -path '.claude/statsig/*' -not -name 'history.jsonl' -not -name 'settings.local.json' 2>/dev/null | sort && echo \"\" && echo \"=== claude/ ディレクトリ ===\" && ls -la claude/ 2>/dev/null && echo \"\" && echo \"=== git status ===\" && git status --short)",
+      "Bash(fish -n /Users/yui.sakamoto/src/github.com/YuiSakamoto/dotfiles2/fish/conf.d/alias.fish)"
+    ],
     "bash": "allow"
   }
 }
