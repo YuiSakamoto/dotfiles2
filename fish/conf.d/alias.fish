@@ -45,5 +45,5 @@ alias duh="du -h ./ --max-depth=1"
 # terraform
 alias tf="terraform"
 
-# claude - プロジェクト単位で管理するラッパー
-# alias claude="~/src/github.com/YuiSakamoto/dotfiles2/bin/claude-project"
+# claude
+alias cl='claude'
