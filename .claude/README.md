@@ -1,96 +1,65 @@
 # Claude Code グローバル設定
 
-このディレクトリには、Claude Codeのグローバル設定ファイルが含まれています。
+`~/.claude/` にシンボリックリンクされ、すべてのプロジェクトで適用されるClaude Code設定です。
 
-## ファイル構成
+## ディレクトリ構成
 
 ```
 ~/.claude/
-├── settings.json      # グローバル設定
-├── CLAUDE.md         # グローバル指示書
-├── commands/         # カスタムコマンド
-│   ├── commit.md     # /commit コマンド
-│   ├── reviews-fix.md # /reviews-fix コマンド
-│   └── workflow-fix.md # /workflow-fix コマンド
-├── mcp-setup.sh      # MCPサーバーセットアップスクリプト
-├── .env.example      # 環境変数の例
-└── README.md         # このファイル
+├── CLAUDE.md                 # グローバル指示（全プロジェクトに適用）
+├── settings.json             # 設定（permissions, hooks, env）
+├── settings.local.json       # 個人設定（gitignore対象）
+├── commands/                 # カスタムスラッシュコマンド・hookスクリプト
+│   ├── commit.md             # /commit
+│   ├── create-pr.md          # /create-pr
+│   ├── reviews-fix.md        # /reviews-fix
+│   ├── workflow-fix.md       # /workflow-fix
+│   ├── cleanup-mcp.md        # /cleanup-mcp
+│   ├── notify-completion.sh  # Stop hook（完了通知）
+│   └── notify-waiting-input.sh # Notification hook（入力待ち通知）
+└── mcp-setup.sh              # MCPサーバー初期セットアップ
 ```
 
-## 初期設定
+## セットアップ
 
-1. **API キーの設定**
-   ```bash
-   cp ~/.claude/.env.example ~/.claude/.env
-   # .env ファイルを編集してAPIキーを設定
-   ```
-
-2. **環境変数の読み込み**
-   ```bash
-   source ~/.claude/.env
-   ```
-
-3. **MCPサーバーのセットアップ**
-   ```bash
-   ~/.claude/mcp-setup.sh
-   ```
-
-## カスタムコマンド
-
-- `/commit` - 会話のコンテキストを考慮して適切なコミットメッセージを生成
-- `/reviews-fix` - PRレビューコメントを分析して修正を実施
-- `/workflow-fix` - GitHub Actionsのエラーを診断して修正
-
-## MCP (Model Context Protocol)
-
-MCPサーバーは新しいコマンドで管理されます：
+dotfiles2リポジトリの `setup.sh` を実行すると、このディレクトリが `~/.claude/` にシンボリックリンクされます。
 
 ```bash
-# ユーザースコープでサーバーを追加
-claude mcp add <name> -s user <command>
+cd ~/src/github.com/YuiSakamoto/dotfiles2
+./setup.sh
+```
 
-# プロジェクトスコープでサーバーを追加
-claude mcp add <name> -s project <command>
+## 設定の優先順位（高 → 低）
 
-# サーバー一覧を確認
+1. プロジェクトローカル設定 (`.claude/settings.local.json`)
+2. プロジェクト設定 (`.claude/settings.json`)
+3. グローバル設定 (`~/.claude/settings.json`) ← このファイル
+
+## MCPサーバーの管理
+
+```bash
+# サーバー追加（ユーザースコープ）
+claude mcp add <name> -s user -- <command>
+
+# サーバー追加（プロジェクトスコープ）
+claude mcp add <name> -s project -- <command>
+
+# 一覧確認
 claude mcp list
 
-# サーバーを削除
-claude mcp remove <name>
+# 初期セットアップスクリプト
+~/.claude/mcp-setup.sh
 ```
 
-## 設定のカスタマイズ
+## プロジェクト固有の設定
 
-### プロジェクト固有の設定
+各プロジェクトのルートに以下を配置できます:
 
-各プロジェクトのルートに `.claude/` ディレクトリを作成して、プロジェクト固有の設定を追加できます：
-
-```bash
+```
 your-project/
-└── .claude/
-    ├── settings.json    # プロジェクト設定（チームで共有）
-    ├── settings.local.json # 個人設定（gitignoreに追加）
-    ├── CLAUDE.md       # プロジェクト固有の指示
-    └── .mcp.json       # プロジェクト固有のMCPサーバー
+├── .claude/
+│   ├── settings.json       # プロジェクト共有設定
+│   ├── settings.local.json # 個人設定（.gitignoreに追加）
+│   └── commands/            # プロジェクト固有コマンド
+└── CLAUDE.md               # プロジェクト固有の指示
 ```
-
-### 設定の優先順位
-
-1. エンタープライズ管理設定（最優先）
-2. プロジェクトローカル設定 (`.claude/settings.local.json`)
-3. プロジェクト設定 (`.claude/settings.json`)
-4. グローバル設定 (`~/.claude/settings.json`)
-
-## トラブルシューティング
-
-- `claude config list` - 現在の設定を確認
-- `claude config get <key>` - 特定の設定値を確認
-- `claude config set <key> <value>` - 設定を変更
-
-## 更新履歴
-
-- 2025-08-05: 初期設定作成
-  - モダンな開発環境に対応した設定
-  - カスタムコマンド追加
-  - 自動フォーマット・Lint機能
-  - MCP設定を別ファイルに分離（新仕様対応）

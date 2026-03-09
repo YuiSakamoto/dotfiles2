@@ -8,24 +8,16 @@
 - コードコメントは基本的に日本語で書いてください（プロジェクトの規約がある場合はそれに従う）
 - 技術的な用語は必要に応じて英語のまま使用してください
 
-## 開発原則
+## 開発環境
 
-1. **コード品質重視**
-   - 読みやすく保守しやすいコードを心がける
-   - 適切なエラーハンドリングを実装する
-   - テストの作成を推奨する
-
-2. **セキュリティ意識**
-   - 機密情報（APIキー、パスワード等）をコードに含めない
-   - 環境変数を適切に使用する
-
-3. **最新のベストプラクティス**
-   - 各言語・フレームワークの最新の推奨事項に従う
-   - モダンな開発ツールを活用する
+- **Shell**: Fish shell (`/opt/homebrew/bin/fish`)
+- **Editor**: Neovim（`vi`, `v` でエイリアス）
+- **Version Manager**: mise (asdf互換)
+- **OS**: macOS (Apple Silicon)
 
 ## パッケージマネージャー
 
-- **JavaScript/TypeScript**: pnpm を使用（npm/yarn/bunは使わない）
+- **JavaScript/TypeScript**: pnpm を使用（npm/yarn/bunは絶対に使わない）
 - **Python**: uv を使用
 - **Go**: go mod を使用
 - **Ruby**: bundler を使用
@@ -41,16 +33,17 @@ Conventional Commits形式を使用:
 - `test:` テストの追加・修正
 - `chore:` ビルドプロセスやツールの変更
 
-## 頻繁に使用するツール
+## コードスタイル
 
-- **フォーマッター**: Prettier (JS/TS), gofmt (Go), ruff (Python)
-- **リンター**: ESLint (JS/TS), golangci-lint (Go), ruff (Python)
+- **TypeScript**: `let` は極力使わない。エラーは `throw` せず Result型でreturnする
+- **全般**: 読みやすいコード優先。コメントは本当に必要な箇所のみ
+
+## フォーマッター・リンター
+
+- **JS/TS**: Prettier, ESLint
+- **Go**: gofmt, golangci-lint
+- **Python**: ruff
 - **Git hooks**: lefthook
-- **コンテナ**: Docker, Dev Containers
-
-## プロジェクト固有の設定
-
-各プロジェクトの `.claude/` ディレクトリに配置された設定ファイルは、このグローバル設定を上書きします。
 
 ## よく使うコマンド
 
@@ -58,13 +51,22 @@ Conventional Commits形式を使用:
 - `/reviews-fix` - PRレビューコメントに対応する
 - `/workflow-fix` - GitHub Actionsのワークフローを修正する
 
-## 検証基準（自己検証用）
+## シェルエイリアス（参考）
+
+`g`=git, `k`=kubectl, `d`=docker, `dc`=docker-compose, `tf`=terraform, `v`=nvim
+
+## 制約事項
+
+- 技術スタックのバージョンは変更せず、必要があれば必ず承認を得る
+- UI/UX デザインの変更（レイアウト、色、フォント、間隔など）は承認なしに行わない
+- 明示的に指示されていない変更は行わない
+
+## 検証基準
 
 変更後は必ず以下で検証:
 - **fish 設定**: `fish -n <file>` で構文チェック
-- **git 操作**: 変更後 `git status` で確認
-- **シンボリックリンク**: 作成後 `ls -la` で確認
 - **シェルスクリプト**: `shellcheck <file>` で静的解析
+- **git 操作**: 変更後 `git status` で確認
 
 ## セッション管理
 
@@ -72,7 +74,7 @@ Conventional Commits形式を使用:
 - 大きなタスクは小さなステップに分割して完了確認を挟む
 - コンテキストが汚染されたと感じたら `/clear` で再開を提案する
 
-## その他の注意事項
+## その他
 
 - ファイルパスは必ず絶対パスで指定する
 - 大量のファイル操作を行う場合は、事前に確認を求める
