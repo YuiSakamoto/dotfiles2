@@ -19,7 +19,7 @@ ln -s $(
   pwd
 )/.claude $HOME/.claude
 
-DOT_FILES_TO_CONFIG_DIR=(fish nvim karabiner wezterm starship.toml claude)
+DOT_FILES_TO_CONFIG_DIR=(fish nvim karabiner wezterm starship.toml)
 
 if [[ ! -d ~/.config ]]; then
   mkdir ~/.config
