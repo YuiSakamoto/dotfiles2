@@ -3,7 +3,7 @@
     "EDITOR": "vim",
     "LANG": "ja_JP.UTF-8",
     "LC_ALL": "ja_JP.UTF-8",
-    "CLAUDE_OBSIDIAN_VAULT": "/Users/yui.sakamoto/src/github.com/YuiSakamoto/obsidian/private"
+    "CLAUDE_OBSIDIAN_VAULT": "$HOME/src/github.com/YuiSakamoto/obsidian/private"
   },
   "hooks": {
     "Notification": [
