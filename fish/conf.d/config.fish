@@ -40,3 +40,6 @@ set -g theme_project_dir_length 8
 set -g theme_newline_cursor yes
 set GHQ_SELECTOR peco
 # OpenAI API key should be set in ~/.config/fish/conf.d/secrets.fish (not tracked in git)
+
+# Claude Code Hooks: Obsidian保存先
+set -gx CLAUDE_OBSIDIAN_VAULT $HOME/src/github.com/YuiSakamoto/obsidian/private
