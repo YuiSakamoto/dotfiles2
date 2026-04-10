@@ -15,11 +15,8 @@
 .idea/**/shelf
 
 # AI関連のファイル
-.cursorrules
-.specstory
 yui_tang.md
 personal.mdc
-.cursorindexingignore
 .gwq.toml
 .serena
 
@@ -57,10 +54,8 @@ nvim/.netrwhist
 .claude/sessions/
 .claude/mcp-needs-auth-cache.json
 .claude/security_warnings_state_*.json
-claude/local/
-
-# 誤って作成された $HOME リテラルディレクトリ
-$HOME/
+# Karabiner自動バックアップ
+karabiner/automatic_backups/
 
 # Generated backups
 fish/config.fish.bak.*

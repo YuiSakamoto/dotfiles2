@@ -82,7 +82,7 @@ link_home() {
 }
 
 link_config() {
-  local targets=(fish nvim starship.toml mise)
+  local targets=(fish nvim starship.toml mise herdr)
   if [ "$OS" = "Darwin" ]; then
     targets+=(karabiner wezterm)
   fi
