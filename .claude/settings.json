@@ -2,89 +2,8 @@
   "env": {
     "EDITOR": "vim",
     "LANG": "ja_JP.UTF-8",
-    "LC_ALL": "ja_JP.UTF-8"
-  },
-  "hooks": {
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "command": "$HOME/.claude/commands/notify-waiting-input.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "permission_prompt"
-      },
-      {
-        "hooks": [
-          {
-            "command": "$HOME/.claude/commands/notify-waiting-input.sh",
-            "type": "command"
-          }
-        ],
-        "matcher": "idle_prompt"
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "hooks": [
-          {
-            "command": "claude-code-hooks notify 'Claude Code' 'パーミッションが必要です'",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "hooks": [
-          {
-            "command": "claude-code-hooks save",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "SessionEnd": [
-      {
-        "hooks": [
-          {
-            "command": "claude-code-hooks save",
-            "statusMessage": "Obsidian にセッションを保存中...",
-            "timeout": 120,
-            "type": "command"
-          },
-          {
-            "command": "claude-code-hooks notify 'Claude Code' 'セッションの保存が完了しました'",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "command": "$HOME/.claude/commands/notify-completion.sh",
-            "type": "command"
-          },
-          {
-            "command": "claude-code-hooks save",
-            "type": "command"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "command": "claude-code-hooks save",
-            "type": "command"
-          }
-        ]
-      }
-    ]
+    "LC_ALL": "ja_JP.UTF-8",
+    "CLAUDE_CODE_ENABLE_TELEMETRY": "1"
   },
   "permissions": {
     "allow": [
@@ -110,5 +29,105 @@
       "Read(*.key)",
       "Read(*.pem)"
     ]
-  }
+  },
+  "hooks": {
+    "Notification": [
+      {
+        "matcher": "permission_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/commands/notify-waiting-input.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "idle_prompt",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/commands/notify-waiting-input.sh"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-code-hooks notify 'Claude Code' 'パーミッションが必要です'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-code-hooks save"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-code-hooks save",
+            "timeout": 120,
+            "statusMessage": "Obsidian にセッションを保存中..."
+          },
+          {
+            "type": "command",
+            "command": "claude-code-hooks notify 'Claude Code' 'セッションの保存が完了しました'"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/commands/notify-completion.sh"
+          },
+          {
+            "type": "command",
+            "command": "claude-code-hooks save"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-code-hooks save"
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "pr-review-toolkit@claude-plugins-official": true,
+    "superpowers@superpowers-marketplace": true,
+    "ralph-loop@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "figma@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "superpowers-marketplace": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers-marketplace"
+      }
+    }
+  },
+  "otelHeadersHelper": "/Users/yui.sakamoto/.claude/scripts/dd-otel-headers.sh"
 }

@@ -42,4 +42,4 @@ set GHQ_SELECTOR peco
 # OpenAI API key should be set in ~/.config/fish/conf.d/secrets.fish (not tracked in git)
 
 # Claude Code Hooks: Obsidian保存先
-set -gx CLAUDE_OBSIDIAN_VAULT $HOME/src/github.com/YuiSakamoto/obsidian/private
+set -gx CLAUDE_OBSIDIAN_VAULT "$HOME/src/github.com/YuiSakamoto/obsidian/private/Claude Code"
