@@ -1,0 +1,63 @@
+# dotfiles2 Brewfile (macOS)
+#
+# 実行: ./setup.sh install  (内部で brew bundle --file=install/Brewfile)
+#
+# 元: https://github.com/YuiSakamoto/brewfile の Brewfile を再編集。
+# CLI は install/apt-packages.txt と揃えてあり、Linux側はそちらを見る。
+
+cask_args appdir: "/Applications"
+
+tap "homebrew/bundle"
+tap "homebrew/services"
+
+# --- CLI ---
+brew "bash"
+brew "coreutils"
+brew "findutils"
+brew "gnu-sed"
+brew "gnu-tar"
+brew "git"
+brew "gh"
+brew "ghq"
+brew "tree"
+brew "tmux"
+brew "fish"
+brew "fzf"
+brew "neovim"
+brew "jq"
+brew "ripgrep"
+brew "fd"
+brew "bat"
+brew "peco"
+brew "starship"
+brew "curl"
+brew "wget"
+brew "openssl"
+brew "pkg-config"
+
+# --- Runtimes / Version managers ---
+brew "mise"
+brew "go"
+brew "rust"
+brew "deno"
+
+# --- Cloud / Infra ---
+brew "awscli"
+brew "terraform"
+brew "kubectl"
+brew "minikube"
+
+# --- Build/graph ---
+brew "graphviz"
+brew "plantuml"
+
+# --- Cask (GUI) ---
+cask "wezterm"
+cask "karabiner-elements"
+cask "visual-studio-code"
+cask "google-cloud-sdk"
+cask "firefox"
+cask "notion"
+cask "1password"
+cask "discord"
+cask "docker"

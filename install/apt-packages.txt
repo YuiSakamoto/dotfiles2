@@ -1,0 +1,36 @@
+# dotfiles2 apt package list (Debian/Ubuntu/WSL)
+#
+# 実行: ./setup.sh install
+# コメント行(#始まり)と空行は無視される。
+#
+# 置き換え方針:
+# - Brewfile の CLI 相当のみ。GUI/cask/fonts は除外。
+# - GNU coreutils 系は Linux は元々 GNU なので不要。
+# - apt に無い / 新しい版が欲しいもの (peco, starship, fisher, gh 等) は
+#   install/common-post.sh で別ルート導入する。
+
+# 基本ビルドツール
+build-essential
+pkg-config
+ca-certificates
+curl
+wget
+unzip
+git
+
+# シェル / エディタ
+fish
+neovim
+tmux
+
+# CLI ユーティリティ
+jq
+tree
+fzf
+ripgrep
+fd-find
+bat
+
+# ネットワーク / 開発補助
+openssl
+gnupg
