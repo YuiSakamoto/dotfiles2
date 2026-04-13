@@ -1,37 +1,34 @@
 if status is-interactive
-    set -g fish_user_paths "/usr/local/opt/bzip2/bin" $fish_user_paths
+    # macOS (Apple Silicon) で Homebrew の環境変数を読む
+    if test (uname) = Darwin; and test -x /opt/homebrew/bin/brew
+        /opt/homebrew/bin/brew shellenv | source
+    end
 
-    # homebrew 用
-    eval (/opt/homebrew/bin/brew shellenv)
-    fish_add_path /opt/homebrew/bin
+    # starship prompt
+    if type -q starship
+        starship init fish | source
+    end
 
-    # set -x PATH $HOME/.anyenv/bin $PATH
-    # fish_add_path $HOME/.anyenv/bin
-    # eval (anyenv init - | source)
-    # (disabled) ssh-agent is managed by macOS launchd/Keychain
-    # eval (ssh-agent -c)
-    # (disabled) ssh-add is handled via AddKeysToAgent/UseKeychain
-    # ssh-add ~/.ssh/id_ed25519
-    # (disabled) do not auto-attach tmux on shell startup
-    # tm
-    starship init fish | source
-    
-    # asdf/mise は interactive のときだけ初期化（git hook 等の非対話シェルを軽くする）
-    source /opt/homebrew/opt/asdf/libexec/asdf.fish
+    # mise (runtime manager) — path.fish で activate 済みだが念のため
+    if type -q mise; and not set -q __mise_activated
+        mise activate fish | source
+        set -g __mise_activated 1
+    end
 end
 
 # kpp(kill path process)
 function kpp
-  kill -9 (lsof -t -i :$argv)
+    kill -9 (lsof -t -i :$argv)
 end
 
 # pnpm
-set -gx PNPM_HOME "/Users/yui.sakamoto/Library/pnpm"
-if not string match -q -- $PNPM_HOME $PATH
-  set -gx PATH "$PNPM_HOME" $PATH
+if test -d "$HOME/Library/pnpm"
+    set -gx PNPM_HOME "$HOME/Library/pnpm"
+else
+    set -gx PNPM_HOME "$HOME/.local/share/pnpm"
 end
-# pnpm end
-fish_add_path $HOME/.local/bin
+if not string match -q -- $PNPM_HOME $PATH
+    set -gx PATH "$PNPM_HOME" $PATH
+end
 
-# Added by Antigravity
-fish_add_path /Users/yui.sakamoto/.antigravity/antigravity/bin
+fish_add_path $HOME/.local/bin

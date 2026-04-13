@@ -1,116 +1,81 @@
 # dotfiles2
 
-個人の開発環境設定ファイル集です。
+個人の開発環境設定ファイル集 (macOS / Linux / WSL 対応)。
 
 ## セットアップ
 
-### 初回セットアップ
-
 ```bash
-# リポジトリをクローン
 git clone https://github.com/YuiSakamoto/dotfiles2.git
 cd dotfiles2
 
-# セットアップスクリプトを実行
-./setup.sh
+# 1. パッケージのインストール (macOSはbrew / Linuxはapt)
+./setup.sh install
+
+# 2. symlink を貼る
+./setup.sh link
+
+# まとめて
+./setup.sh all
 ```
 
-これにより、以下のファイルがシンボリックリンクとして設定されます：
+`--dry-run` を付けると実際には実行せず、何をやるかだけ出力します。
 
-- `~/.gitconfig` - Gitの設定
-- `~/.gitignore` - グローバルなgitignore
-- `~/.tmux.conf` - tmuxの設定
-- `~/.config/fish/` - fishシェルの設定
-- `~/.config/nvim/` - Neovimの設定
-- `~/.config/karabiner/` - Karabinerの設定（macOS）
-- `~/.config/wezterm/` - WezTermの設定
-- `~/.config/starship.toml` - Starshipの設定
-- `/usr/local/bin/ssm` - AWS SSM用スクリプト
+### 何が symlink されるか
 
-## 各ツールの使い方
+共通:
 
-### tmux
+- `~/.gitconfig`, `~/.gitignore`, `~/.tmux.conf`
+- `~/.config/fish/`, `~/.config/nvim/`, `~/.config/mise/`, `~/.config/starship.toml`
+- `~/.claude/` 以下の `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `scripts/`, `settings.json`, `mcp-setup.sh`, `.env.example`
+  - `credentials.json`, `sessions/`, `projects/` 等のランタイム状態は**触らない**
+- `~/.local/bin/ssm`, `~/.local/bin/claude-project`
+  - `~/.local/bin` が `PATH` に入っている必要あり (fish 側は `path.fish` で追加済み)
 
-[tmux/README.md](tmux/README.md) を参照
+macOS のみ:
 
-主な機能：
-- Prefix: `Ctrl+T`
-- pane title機能（新機能）
-- vim風のキーバインディング
+- `~/.config/karabiner/`, `~/.config/wezterm/`
 
-### fish
+既存ファイルは `~/dotfiles-backup-<timestamp>/` に退避されます。既に正しい symlink ならスキップ (冪等)。
 
-[fish/README.md](fish/README.md) を参照
+## パッケージ管理
 
-主な機能：
-- 豊富なエイリアス設定
-- peco連携（履歴検索など）
-- bobthefishテーマ
+- **macOS**: [`install/Brewfile`](install/Brewfile) — `brew bundle` 互換
+- **Linux/WSL**: [`install/apt-packages.txt`](install/apt-packages.txt) — `apt-get install` 用リスト (コメント可)
+- **共通後処理**: [`install/common-post.sh`](install/common-post.sh) — starship / mise / peco / fisher など、パッケージマネージャだけでは足りないものを導入
 
-### Neovim
+## ディレクトリ構成
 
-[nvim/README.md](nvim/README.md) を参照
-
-主な機能：
-- dein.vimによるプラグイン管理
-- LSP対応
-- カスタマイズされたキーマッピング
-
-### Karabiner
-
-[karabiner/README.md](karabiner/README.md) を参照
-
-macOS用のキーボードカスタマイズ設定
-
-### WezTerm
-
-[wezterm/README.md](wezterm/README.md) を参照
-
-高機能なターミナルエミュレータの設定
-
-## よく使うコマンド
-
-```bash
-# tmux
-tm              # tmux起動
-tma             # tmuxアタッチ
-tpt "タイトル"  # pane titleを設定
-
-# git
-g s             # git status
-g po            # git push origin
-g up            # git pull --rebase
-
-# その他
-vi              # Neovim起動
-k               # kubectl
-d               # docker
 ```
-
-## Claude Code連携
-
-このリポジトリには`CLAUDE.md`が含まれており、Claude Codeでの作業時に適切なコンテキストが提供されます。
+.
+├── setup.sh              # OS判定 + symlink + パッケージインストール
+├── install/              # パッケージ定義
+│   ├── Brewfile
+│   ├── apt-packages.txt
+│   └── common-post.sh
+├── .claude/              # Claude Code のグローバル設定
+├── fish/                 # fish shell
+├── nvim/                 # Neovim
+├── mise/                 # mise (asdf互換)
+├── karabiner/            # Karabiner-Elements (macOS)
+├── wezterm/              # WezTerm (macOS)
+├── bin/                  # ユーティリティスクリプト
+└── starship.toml
+```
 
 ## トラブルシューティング
 
-### fishが起動しない場合
+### fish をデフォルトシェルにしたい
 
 ```bash
-# fishのパスを確認
-which fish
+# macOS (Homebrew)
+which fish | sudo tee -a /etc/shells && chsh -s "$(which fish)"
 
-# /etc/shellsに追加
-echo /usr/local/bin/fish | sudo tee -a /etc/shells
-
-# デフォルトシェルに設定
-chsh -s /usr/local/bin/fish
+# Linux/WSL (apt)
+sudo chsh -s "$(which fish)" "$USER"
 ```
 
-### tmux設定が反映されない場合
+### tmux 設定が反映されない
 
 ```bash
-# tmux内で
-tmux source-file ~/.tmux.conf
-
-# または Ctrl+T → r
+tmux source-file ~/.tmux.conf   # または Ctrl+T → r
 ```

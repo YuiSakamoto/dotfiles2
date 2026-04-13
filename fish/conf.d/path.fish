@@ -1,27 +1,25 @@
-set -x GOPATH $HOME
-set -x GOBIN $HOME/bin
-set -x PATH $PATH $GOPATH/bin
-set -gx PATH $PATH $HOME/go/bin
+set -gx GOPATH $HOME
+set -gx GOBIN $HOME/bin
 
-set -gx PKG_CONFIG_PATH "/usr/local/opt/krb5/lib/pkgconfig" $PKG_CONFIG_PATH
-set -gx PKG_CONFIG_PATH "/usr/local/opt/openssl@1.1/lib/pkgconfig" $PKG_CONFIG_PATH
-set -gx PKG_CONFIG_PATH "/usr/local/opt/zlib/lib/pkgconfig" $PKG_CONFIG_PATH
-
-# set -x PATH $HOME/.anyenv/bin $PATH
-# fish_add_path $HOME/.anyenv/bin
-# eval (anyenv init - | source)
-
-# set -x GOENV_ROOT $HOME/.goenv
-# set -x PATH $GOENV_ROOT/bin:$PATH
-# set -x PATH $HOME/.goenv/bin:$PATH
-# eval (goenv init -)
-
-# set -x PATH $PATH:/usr/local/bin:$HOME/.composer/vendor/bin
-# set -x PATH $PATH:/usr/local/bin/terraform
-# asdf configuration
-source /opt/homebrew/opt/asdf/libexec/asdf.fish
-
-fish_add_path $HOME/.composer/vendoer/bin
-fish_add_path /usr/local/bin/terraform
+# dotfiles2 の bin/ は ~/.local/bin に symlink される
+fish_add_path $HOME/.local/bin
 fish_add_path $HOME/bin
-fish_add_path /opt/homebrew/opt/libpq/bin
+fish_add_path $HOME/go/bin
+
+# mise (asdf 互換のランタイム管理)
+if type -q mise
+    mise activate fish | source
+end
+
+# --- macOS (Apple Silicon) 固有 ---
+if test (uname) = Darwin
+    fish_add_path /opt/homebrew/bin /opt/homebrew/sbin
+    for p in /opt/homebrew/opt/krb5/lib/pkgconfig /opt/homebrew/opt/openssl@3/lib/pkgconfig /opt/homebrew/opt/zlib/lib/pkgconfig
+        if test -d $p
+            set -gx PKG_CONFIG_PATH $p $PKG_CONFIG_PATH
+        end
+    end
+    if test -d /opt/homebrew/opt/libpq/bin
+        fish_add_path /opt/homebrew/opt/libpq/bin
+    end
+end
