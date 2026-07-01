@@ -15,14 +15,28 @@ focus_pane_down = "prefix+j"
 focus_pane_up = "prefix+k"
 focus_pane_right = "prefix+l"
 
+# ペイン入れ替え（Shift+Vim風）
+swap_pane_left = "prefix+shift+h"
+swap_pane_down = "prefix+shift+j"
+swap_pane_up = "prefix+shift+k"
+swap_pane_right = "prefix+shift+l"
+
+# ペインサイクル・直前のペインに戻る
+cycle_pane_next = "prefix+tab"
+cycle_pane_previous = "prefix+shift+tab"
+last_pane = "prefix+;"
+
 # ペイン分割: | で垂直、- で水平（tmuxと同じ）
-split_vertical = "prefix+pipe"
+split_vertical = "prefix+|"
 split_horizontal = "prefix+minus"
 
 # タブ操作
 new_tab = "prefix+c"
 previous_tab = "prefix+p"
 next_tab = "prefix+n"
+switch_tab = "prefix+1..9"
+rename_tab = "prefix+shift+t"
+close_tab = "prefix+shift+x"
 
 # コピーモード（vi風）
 copy_mode = "prefix+["
@@ -45,6 +59,15 @@ rename_pane = "prefix+shift+p"
 # ワークスペース
 new_workspace = "prefix+shift+n"
 workspace_picker = "prefix+w"
+rename_workspace = "prefix+shift+w"
+close_workspace = "prefix+shift+d"
+switch_workspace = "prefix+shift+1..9"
+
+# エージェントフォーカス（Alt+数字で直接選択）
+focus_agent = "prefix+alt+1..9"
+
+# Worktree操作
+new_worktree = "prefix+shift+g"
 
 # ヘルプ
 help = "prefix+?"
