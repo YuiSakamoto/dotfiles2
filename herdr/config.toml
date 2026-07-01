@@ -1,0 +1,82 @@
+# herdr configuration
+# tmux設定 (~/.tmux.conf) から移植
+
+[terminal]
+# Fish shellを使用
+default_shell = "/opt/homebrew/bin/fish"
+
+[keys]
+# Prefixキー: Ctrl+T（tmuxと同じ）
+prefix = "ctrl+t"
+
+# ペイン操作（Vim風キーバインド）
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# ペイン分割: | で垂直、- で水平（tmuxと同じ）
+split_vertical = "prefix+pipe"
+split_horizontal = "prefix+minus"
+
+# タブ操作
+new_tab = "prefix+c"
+previous_tab = "prefix+p"
+next_tab = "prefix+n"
+
+# コピーモード（vi風）
+copy_mode = "prefix+["
+
+# リサイズモード
+resize_mode = "prefix+r"
+
+# デタッチ
+detach = "prefix+q"
+
+# ペインを閉じる
+close_pane = "prefix+x"
+
+# ズーム
+zoom = "prefix+z"
+
+# ペイン名前設定（tmuxの Prefix+T に相当）
+rename_pane = "prefix+shift+p"
+
+# ワークスペース
+new_workspace = "prefix+shift+n"
+workspace_picker = "prefix+w"
+
+# ヘルプ
+help = "prefix+?"
+
+# サイドバー切り替え
+toggle_sidebar = "prefix+b"
+
+# lazygitをカスタムコマンドとして登録
+[[keys.command]]
+key = "prefix+g"
+type = "pane"
+command = "lazygit"
+
+[ui]
+# マウス操作有効（tmuxと同じ）
+mouse_capture = true
+
+# ペインボーダー表示（tmuxのpane-border-statusに相当）
+pane_borders = true
+pane_gaps = true
+
+# エージェントラベルをボーダーに表示
+show_agent_labels_on_pane_borders = true
+
+[ui.toast]
+# 通知をシステム通知で表示（terminal-notifierの代替）
+delivery = "system"
+
+[ui.sound]
+# エージェント状態変更時のサウンド通知
+enabled = true
+
+[experimental]
+# CJK IME対応（日本語入力時にprefixが正しく動作するように）
+switch_ascii_input_source_in_prefix = true
