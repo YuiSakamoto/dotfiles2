@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# macOS専用の通知スクリプト。osascript が存在しない環境 (Linux/WSL) では
+# 何もせず正常終了し、hookを汚染しない。
+command -v osascript >/dev/null 2>&1 || exit 0
+
 # macOSのシステムサウンドを再生
 # 利用可能なサウンド: Basso, Blow, Bottle, Frog, Funk, Glass, Hero, Morse, Ping, Pop, Purr, Sosumi, Submarine, Tink
 SOUND_FILE="/System/Library/Sounds/Glass.aiff"

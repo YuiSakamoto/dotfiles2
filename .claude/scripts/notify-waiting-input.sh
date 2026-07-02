@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# macOS専用の通知スクリプト。osascript が存在しない環境 (Linux/WSL) では
+# 何もせず正常終了し、hookを汚染しない。
+command -v osascript >/dev/null 2>&1 || exit 0
+
 # macOSのシステムサウンドを再生（入力待ちは控えめな音）
 SOUND_FILE="/System/Library/Sounds/Tink.aiff"
 

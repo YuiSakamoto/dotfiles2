@@ -62,6 +62,25 @@ macOS のみ:
 └── starship.toml
 ```
 
+## Linux / WSL 対応
+
+`setup.sh` は macOS / Linux (Debian系・WSL含む) 両対応です。symlink を貼る `link` 処理はOS共通、パッケージインストール (`install`) は `uname` 判定で `brew` / `apt-get` を切り替えます。
+
+Claude Code 関連 (`.claude/`, `bin/dotfiles-doctor`) の対応状況:
+
+| 項目 | macOS | Linux/WSL |
+| --- | --- | --- |
+| `bin/dotfiles-doctor`（環境検証、`./setup.sh doctor`） | 対応 | 対応（karabiner/wezterm 検査は自動スキップ） |
+| `.claude/scripts/validate-edit.sh`（構文検証hook） | 対応 | 対応（fish/shellcheck/ruff等が未導入でも自動スキップ） |
+| `.claude/scripts/notify-*.sh`（完了/入力待ち通知） | 対応 | macOS専用。`osascript` が無い環境では即終了し、hookは汚染しない |
+| `karabiner/`, `wezterm/` | 対応 | 対象外（symlink・doctor検査ともにスキップ） |
+
+WSL固有の注意:
+
+- 通知音・デスクトップ通知は出ません（`notify-*.sh` が `osascript` 不在を検知して静かに無効化されるため）
+- Homebrew は不要です。`./setup.sh install` は `install/apt-packages.txt` を使って `apt-get install` します
+- apt に無いツール（peco, starship, fisher, gh 等）は `install/common-post.sh` で別途導入されます
+
 ## トラブルシューティング
 
 ### fish をデフォルトシェルにしたい
