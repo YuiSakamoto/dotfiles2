@@ -29,33 +29,27 @@ fish/conf.d/secrets.fish
 # Neovim
 nvim/.netrwhist
 
-# Claude Code (ユーザー生成・キャッシュ)
-.claude/settings.local.json
-.claude/.update.lock
-.claude/image-cache/
-.claude/tasks/
-.claude/todos/
-.claude/projects/
-.claude/shell-snapshots/
-.claude/statsig/
-.claude/local/
-.claude/debug/
-.claude/history.jsonl
-.claude/ide/
-.claude/plugins/
-.claude/telemetry/
-.claude/backups/
-.claude/cache/
-.claude/file-history/
-.claude/plans/
-.claude/session-env/
-.claude/memory/
-.claude/paste-cache/
-.claude/sessions/
-.claude/mcp-needs-auth-cache.json
-.claude/security_warnings_state_*.json
+# Claude Code: allowlist方式（明示した設定ファイル以外はコミット不可）
+# ランタイム状態・認証情報が増えても誤ってコミットされない構造にする
+.claude/*
+!.claude/CLAUDE.md
+!.claude/README.md
+!.claude/agents/
+!.claude/commands/
+!.claude/skills/
+!.claude/scripts/
+!.claude/settings.json
+!.claude/mcp-setup.sh
+!.claude/.env.example
+
+# herdr ランタイムファイル
+herdr/*.log
+herdr/session.json
+
 # Karabiner自動バックアップ
 karabiner/automatic_backups/
 
 # Generated backups
 fish/config.fish.bak.*
+
+**/.claude/settings.local.json
