@@ -1,0 +1,187 @@
+#!/usr/bin/env bash
+# dotfiles-doctor
+#
+# dotfiles 環境が期待状態（symlink構成・秘密情報混入なし・構文正当性・
+# 必須ツール導入）にあるかを検査し、レポートする standalone コマンド。
+# setup.sh とは独立して動作する（setup.sh doctor からも呼ばれる）。
+#
+# Usage:
+#   bin/dotfiles-doctor
+#
+# 終了コード: fail が1件でもあれば 1、それ以外は 0。
+set -uo pipefail
+# 個別チェックの失敗で即死しないよう -e は使わない
+
+# リポジトリのルートをスクリプト自身の位置から解決する（ハードコード禁止）
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+OS="$(uname -s)"
+
+COUNT_OK=0
+COUNT_WARN=0
+COUNT_FAIL=0
+
+# 色付き出力用エスケープシーケンス
+COLOR_OK=$'\033[1;32m'
+COLOR_WARN=$'\033[1;33m'
+COLOR_FAIL=$'\033[1;31m'
+COLOR_RESET=$'\033[0m'
+
+ok() {
+  printf '%s[ok]%s   %s\n' "$COLOR_OK" "$COLOR_RESET" "$1"
+  COUNT_OK=$((COUNT_OK + 1))
+}
+
+warn() {
+  printf '%s[warn]%s %s\n' "$COLOR_WARN" "$COLOR_RESET" "$1"
+  COUNT_WARN=$((COUNT_WARN + 1))
+}
+
+fail() {
+  printf '%s[fail]%s %s\n' "$COLOR_FAIL" "$COLOR_RESET" "$1"
+  COUNT_FAIL=$((COUNT_FAIL + 1))
+}
+
+section() {
+  printf '\n\033[1m== %s ==\033[0m\n' "$1"
+}
+
+# --- symlink 検査 -----------------------------------------------------
+# $1: 表示名, $2: symlink先(target), $3: 期待するリンク元(src)
+check_symlink() {
+  local label="$1" target="$2" expected_src="$3"
+
+  if [ -L "$target" ]; then
+    local actual_src
+    actual_src="$(readlink "$target")"
+    if [ "$actual_src" = "$expected_src" ]; then
+      ok "$label: $target -> $expected_src"
+    else
+      fail "$label: $target のリンク先が想定と異なる (actual: $actual_src, expected: $expected_src)"
+    fi
+  elif [ -e "$target" ]; then
+    fail "$label: $target は symlink ではなく実体ファイル/ディレクトリです"
+  else
+    warn "$label: $target が存在しません"
+  fi
+}
+
+section "symlink 検査 (\$HOME直下)"
+check_symlink ".gitconfig" "$HOME/.gitconfig" "$REPO_DIR/.gitconfig"
+check_symlink ".gitignore" "$HOME/.gitignore" "$REPO_DIR/.gitignore"
+check_symlink ".tmux.conf" "$HOME/.tmux.conf" "$REPO_DIR/.tmux.conf"
+
+section "symlink 検査 (\$HOME/.config)"
+config_targets=(fish nvim starship.toml mise herdr)
+if [ "$OS" = "Darwin" ]; then
+  config_targets+=(karabiner wezterm)
+fi
+for t in "${config_targets[@]}"; do
+  check_symlink ".config/$t" "$HOME/.config/$t" "$REPO_DIR/$t"
+done
+
+section "symlink 検査 (\$HOME/.claude)"
+# ~/.claude 自体はランタイム状態 (credentials, projects 等) を含む実体ディレクトリで
+# なければならない。symlink になっているとリポジトリにランタイム状態が
+# 混入する危険な構成になるためエラー扱いとする。
+if [ -L "$HOME/.claude" ]; then
+  fail ".claude: $HOME/.claude が symlink になっています（実体ディレクトリであるべき。ランタイム状態がリポジトリに混入する危険があります）"
+elif [ -d "$HOME/.claude" ]; then
+  ok ".claude: $HOME/.claude は実体ディレクトリです"
+else
+  warn ".claude: $HOME/.claude が存在しません"
+fi
+
+claude_items=(CLAUDE.md agents skills scripts settings.json mcp-setup.sh .env.example)
+for item in "${claude_items[@]}"; do
+  check_symlink ".claude/$item" "$HOME/.claude/$item" "$REPO_DIR/.claude/$item"
+done
+
+# --- 秘密情報検査 -------------------------------------------------------
+section "秘密情報検査"
+if command -v git >/dev/null 2>&1; then
+  tracked_secrets="$(git -C "$REPO_DIR" ls-files 2>/dev/null | grep -E '(^|/)(\.credentials\.json|settings\.local\.json|history\.jsonl)$' || true)"
+  if [ -z "$tracked_secrets" ]; then
+    ok "git 追跡ファイルに .credentials.json / settings.local.json / history.jsonl は含まれていません"
+  else
+    fail "git 追跡ファイルに秘密情報の可能性があるファイルが含まれています:"$'\n'"$tracked_secrets"
+  fi
+else
+  warn "git コマンドが見つからないため秘密情報検査をスキップしました"
+fi
+
+# --- 構文検査 -----------------------------------------------------------
+section "構文検査"
+
+if [ -f "$REPO_DIR/.claude/settings.json" ]; then
+  if command -v jq >/dev/null 2>&1; then
+    if jq empty "$REPO_DIR/.claude/settings.json" >/dev/null 2>&1; then
+      ok ".claude/settings.json は valid JSON です"
+    else
+      fail ".claude/settings.json が invalid JSON です"
+    fi
+  elif command -v python3 >/dev/null 2>&1; then
+    if python3 -m json.tool "$REPO_DIR/.claude/settings.json" >/dev/null 2>&1; then
+      ok ".claude/settings.json は valid JSON です"
+    else
+      fail ".claude/settings.json が invalid JSON です"
+    fi
+  else
+    warn ".claude/settings.json の JSON 検証をスキップしました (jq/python3 が見つかりません)"
+  fi
+else
+  warn ".claude/settings.json が見つかりません"
+fi
+
+if [ -f "$REPO_DIR/setup.sh" ]; then
+  if bash -n "$REPO_DIR/setup.sh" 2>/dev/null; then
+    ok "setup.sh は bash -n を通過しました"
+  else
+    fail "setup.sh が bash -n に失敗しました"
+  fi
+else
+  warn "setup.sh が見つかりません"
+fi
+
+if command -v fish >/dev/null 2>&1; then
+  if [ -d "$REPO_DIR/fish/conf.d" ]; then
+    fish_fail=0
+    for f in "$REPO_DIR"/fish/conf.d/*.fish; do
+      [ -f "$f" ] || continue
+      if ! fish -n "$f" 2>/dev/null; then
+        fail "fish/conf.d/$(basename "$f") が fish -n に失敗しました"
+        fish_fail=1
+      fi
+    done
+    if [ "$fish_fail" -eq 0 ]; then
+      ok "fish/conf.d/*.fish はすべて fish -n を通過しました"
+    fi
+  else
+    warn "fish/conf.d ディレクトリが見つかりません"
+  fi
+else
+  warn "fish コマンドが見つからないため fish 構文検査をスキップしました"
+fi
+
+# --- ツール検査 ---------------------------------------------------------
+section "ツール検査"
+tools=(brew mise fish nvim starship jq shellcheck gh)
+for t in "${tools[@]}"; do
+  if command -v "$t" >/dev/null 2>&1; then
+    ok "$t が見つかりました ($(command -v "$t"))"
+  else
+    warn "$t が見つかりません"
+  fi
+done
+
+# --- サマリ ---------------------------------------------------------
+section "サマリ"
+printf '%sok: %d%s  %swarn: %d%s  %sfail: %d%s\n' \
+  "$COLOR_OK" "$COUNT_OK" "$COLOR_RESET" \
+  "$COLOR_WARN" "$COUNT_WARN" "$COLOR_RESET" \
+  "$COLOR_FAIL" "$COUNT_FAIL" "$COLOR_RESET"
+
+if [ "$COUNT_FAIL" -gt 0 ]; then
+  exit 1
+fi
+exit 0

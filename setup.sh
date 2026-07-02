@@ -6,6 +6,7 @@
 #   ./setup.sh link         # create symlinks only
 #   ./setup.sh install      # install packages only (brew / apt)
 #   ./setup.sh all          # install packages, then link
+#   ./setup.sh doctor       # verify environment state (symlinks, secrets, syntax)
 #   ./setup.sh --dry-run    # print actions without executing (combinable)
 #
 # macOS / Linux (Debian系・WSL含む) 両対応。
@@ -18,7 +19,7 @@ CMD="link"
 for arg in "$@"; do
   case "$arg" in
     --dry-run) DRY_RUN=1 ;;
-    link|install|all) CMD="$arg" ;;
+    link|install|all|doctor) CMD="$arg" ;;
     -h|--help)
       sed -n '2,12p' "$0" | sed 's/^# \{0,1\}//'
       exit 0
@@ -94,7 +95,7 @@ link_config() {
 link_claude() {
   # ~/.claude 以下のランタイム状態 (credentials, sessions, projects 等) を
   # 巻き込まないよう、リポジトリで管理する個別ファイル/ディレクトリだけを symlink する。
-  local items=(CLAUDE.md agents commands skills scripts settings.json mcp-setup.sh .env.example)
+  local items=(CLAUDE.md agents skills scripts settings.json mcp-setup.sh .env.example)
   run mkdir -p "$HOME/.claude"
   for item in "${items[@]}"; do
     link "$DOTFILES_DIR/.claude/$item" "$HOME/.claude/$item"
@@ -147,6 +148,7 @@ case "$CMD" in
   link)    link_home; link_config; link_claude; link_bin ;;
   install) install_packages ;;
   all)     install_packages; link_home; link_config; link_claude; link_bin ;;
+  doctor)  exec "$DOTFILES_DIR/bin/dotfiles-doctor" ;;
 esac
 
 if [ -d "$BACKUP_DIR" ]; then

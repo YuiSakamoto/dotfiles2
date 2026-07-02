@@ -26,7 +26,7 @@ cd dotfiles2
 
 - `~/.gitconfig`, `~/.gitignore`, `~/.tmux.conf`
 - `~/.config/fish/`, `~/.config/nvim/`, `~/.config/mise/`, `~/.config/starship.toml`
-- `~/.claude/` 以下の `CLAUDE.md`, `agents/`, `commands/`, `skills/`, `scripts/`, `settings.json`, `mcp-setup.sh`, `.env.example`
+- `~/.claude/` 以下の `CLAUDE.md`, `agents/`, `skills/`, `scripts/`, `settings.json`, `mcp-setup.sh`, `.env.example`
   - `credentials.json`, `sessions/`, `projects/` 等のランタイム状態は**触らない**
 - `~/.local/bin/ssm`, `~/.local/bin/claude-project`
   - `~/.local/bin` が `PATH` に入っている必要あり (fish 側は `path.fish` で追加済み)

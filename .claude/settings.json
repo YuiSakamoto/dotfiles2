@@ -17,7 +17,9 @@
       "Bash(afplay *)",
       "Bash(./setup.sh)",
       "Bash(shellcheck *)",
-      "Bash(gh *)"
+      "Bash(gh *)",
+      "Bash(uv *)",
+      "Bash(jq *)"
     ],
     "deny": [
       "Bash(rm -rf /*)",
@@ -26,10 +28,16 @@
       "Bash(yarn *)",
       "Bash(bun *)",
       "Read(.env*)",
-      "Read(*.key)",
-      "Read(*.pem)"
+      "Read(**/.env*)",
+      "Read(**/*.key)",
+      "Read(**/*.pem)",
+      "Read(~/.claude/.credentials.json)",
+      "Read(//**/.ssh/**)",
+      "Read(//**/.aws/**)"
     ]
   },
+  "model": "claude-fable-5[1m]",
+  "language": "japanese",
   "hooks": {
     "Notification": [
       {
@@ -37,7 +45,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/.claude/commands/notify-waiting-input.sh"
+            "command": "$HOME/.claude/scripts/notify-waiting-input.sh"
           }
         ]
       },
@@ -46,7 +54,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/.claude/commands/notify-waiting-input.sh"
+            "command": "$HOME/.claude/scripts/notify-waiting-input.sh"
           }
         ]
       }
@@ -67,6 +75,15 @@
           {
             "type": "command",
             "command": "claude-code-hooks save"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/scripts/validate-edit.sh"
           }
         ]
       }
@@ -92,7 +109,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "$HOME/.claude/commands/notify-completion.sh"
+            "command": "$HOME/.claude/scripts/notify-completion.sh"
           },
           {
             "type": "command",
@@ -140,5 +157,6 @@
     }
   },
   "otelHeadersHelper": "/Users/yui.sakamoto/.claude/scripts/dd-otel-headers.sh",
+  "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true
 }

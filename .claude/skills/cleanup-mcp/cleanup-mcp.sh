@@ -36,9 +36,9 @@ else
     echo "✅ クリーンアップが必要なMCPプロセスはありませんでした"
 fi
 
-# 現在実行中のMCPプロセスを表示
+# 現在実行中のMCPプロセスを表示（ps+grepではなくpgrepでゾンビの取りこぼしを防ぐ）
 echo ""
 echo "📊 現在のMCPプロセス状況:"
-ps aux | grep -E "(mcp|playwright|figma|notion|slack)" | grep -v grep | awk '{print "  " $11}' | sort | uniq -c || echo "  なし"
+pgrep -fl "(mcp|playwright|figma|notion|slack)" | awk '{$1=""; print "  " $0}' | sort | uniq -c || echo "  なし"
 
 exit 0
