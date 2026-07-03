@@ -49,6 +49,10 @@ Conventional Commits形式を使う: `feat:` / `fix:` / `docs:` / `style:` / `re
 - `/workflow-fix` - 失敗した GitHub Actions を調査・修正する
 - `/cleanup-mcp` - MCPサーバーのゾンビプロセスを掃除する
 
+## 参照リソース
+
+- Claude API を使う実装（agents, RAG, tool use, prompt caching 等）では [anthropics/claude-cookbooks](https://github.com/anthropics/claude-cookbooks) の該当 notebook を実装前に参照する（cloneせず都度 fetch でよい）
+
 ## シェルエイリアス（参考）
 
 `g`=git, `k`=kubectl, `d`=docker, `dc`=docker-compose, `tf`=terraform, `v`=nvim
