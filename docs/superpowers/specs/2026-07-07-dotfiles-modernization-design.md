@@ -98,7 +98,18 @@ delta 未導入環境で git が壊れないよう、doctor で検査対象に�
 
 ## 5. パッケージ管理・WSL 対応
 
-### Brewfile 追加
+### 旧 brewfile リポジトリの統合(一本化)
+
+`~/src/github.com/YuiSakamoto/brewfile` を廃止し、`dotfiles2/install/Brewfile` に一本化する。
+
+- **cask 維持**: ghostty, iterm2, raycast, visual-studio-code, karabiner-elements, 1password, 1password-cli, docker, dbeaver-community, insomnia, bartender, kindle, anki, zotero, deepl, grammarly-desktop, discord, notion, notion-calendar, obsidian, firefox, google-chrome, ngrok, google-cloud-sdk, font-hackgen-nerd(新規), font-noto-sans-cjk-jp
+- **cask 削除**: wezterm(dotfiles2 の `wezterm/` 設定ディレクトリ・symlink 処理も削除), warp, alfred, intellij-idea, phpstorm, zed, postman, clipy, spectacle, skitch, gyazo, github, jasper, sequel-pro, setapp, appcleaner, fontforge, font-ricty-diminished, font-source-code-pro-for-powerline, mas "Magnet"(Raycast のウィンドウ管理で代替。mas 依存ゼロに)
+- **brew 取り込み**: terminal-notifier, mycli, libpq, marp-cli, tig, tflint, docker-compose, watch, claude-code-hooks(tap 含む), herdr(tap 要確認)
+- **brew 削除**: reattach-to-user-namespace, peco, asdf, goenv, tfenv, zsh, zplug, hub, terraformer, terraforming, aicommits(Claude Code で代替), pnpm(mise 管理済み), fontforge, binutils/ed/gnu-indent/gnu-which/gnutls/gzip/wdiff/diffutils/gawk(利用実態なし)
+- **alias 削除**: `ij`(IntelliJ 廃止に伴い)
+- 旧リポジトリは「dotfiles2 に移行済み」の README のみ残して役目終了。`~/.Brewfile` symlink は削除(doctor で残存を警告)
+
+### Brewfile 追加(モダナイズ分)
 
 `eza`, `zoxide`, `atuin`, `git-delta`, `lazygit`, `btop`, `dust`, `duf`, `tlrc`
 
@@ -136,7 +147,7 @@ delta 未導入環境で git が壊れないよう、doctor で検査対象に�
 
 ## スコープ外
 
-- karabiner / wezterm の設定変更
+- karabiner の設定変更(wezterm は上記の通り廃止するためスコープ内)
 - Claude Code 環境(直近モダナイズ済み)
 - chezmoi 移行(install/README.md の判断基準を踏襲し、現時点では見送り)
 - atuin のサーバー同期セットアップ(ユーザー任意)
