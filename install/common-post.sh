@@ -2,15 +2,36 @@
 # dotfiles2 共通の後処理インストーラ
 #
 # setup.sh install の最後に呼ばれる。
-# apt / brew のパッケージリストに載らないもの (公式スクリプト導入推奨のもの等) を入れる。
+# apt / brew のパッケージリストに載らないもの (公式スクリプト導入推奨のもの、
+# apt に無い/古いもの) を入れる。冪等 (導入済みならスキップ)。
 set -euo pipefail
 
 OS="$(uname -s)"
+ARCH="$(uname -m)"
 log() { printf '\033[1;34m[post]\033[0m %s\n' "$*"; }
-
 have() { command -v "$1" >/dev/null 2>&1; }
 
-# ---- starship ----
+BIN_DIR="$HOME/.local/bin"
+mkdir -p "$BIN_DIR"
+
+# GitHub release の tar.gz からバイナリ1つを ~/.local/bin に入れるヘルパー
+# $1: コマンド名, $2: ダウンロードURL, $3: tar 内のバイナリパス
+gh_bin_install() {
+  local name="$1" url="$2" path_in_tar="$3" tmp
+  have "$name" && return 0
+  if [ "$ARCH" != "x86_64" ]; then
+    log "skip $name (unsupported arch: $ARCH)"
+    return 0
+  fi
+  log "installing $name"
+  tmp=$(mktemp -d)
+  curl -fsSL "$url" -o "$tmp/pkg.tgz"
+  tar -xzf "$tmp/pkg.tgz" -C "$tmp"
+  install -m 0755 "$tmp/$path_in_tar" "$BIN_DIR/$name"
+  rm -rf "$tmp"
+}
+
+# ---- starship (プロンプト) ----
 # apt には無いので公式スクリプトで。brew 側は Brewfile 済。
 if [ "$OS" = "Linux" ] && ! have starship; then
   log "installing starship"
@@ -23,38 +44,59 @@ if ! have mise; then
   curl -fsSL https://mise.run | sh
 fi
 
-# ---- peco ----
-# apt の版は古いことがあるため GitHub release から。Linux のみ。
-if [ "$OS" = "Linux" ] && ! have peco; then
-  log "installing peco"
-  tmp=$(mktemp -d)
-  ver="v0.5.11"
-  curl -fsSL "https://github.com/peco/peco/releases/download/${ver}/peco_linux_amd64.tar.gz" \
-    -o "$tmp/peco.tgz"
-  tar -xzf "$tmp/peco.tgz" -C "$tmp"
-  mkdir -p "$HOME/.local/bin"
-  install -m 0755 "$tmp/peco_linux_amd64/peco" "$HOME/.local/bin/peco"
-  rm -rf "$tmp"
+# ---- atuin (シェル履歴) ----
+# apt に無いので公式インストーラで。brew 側は Brewfile 済。
+if [ "$OS" = "Linux" ] && ! have atuin; then
+  log "installing atuin"
+  curl --proto '=https' --tlsv1.2 -fsSL https://setup.atuin.sh | sh
+fi
+
+# ---- GitHub release 由来のバイナリ (Linux のみ、apt に無い/古いもの) ----
+if [ "$OS" = "Linux" ]; then
+  gh_bin_install eza \
+    "https://github.com/eza-community/eza/releases/download/v0.23.4/eza_x86_64-unknown-linux-gnu.tar.gz" \
+    "eza"
+  gh_bin_install delta \
+    "https://github.com/dandavison/delta/releases/download/0.19.2/delta-0.19.2-x86_64-unknown-linux-gnu.tar.gz" \
+    "delta-0.19.2-x86_64-unknown-linux-gnu/delta"
+  gh_bin_install lazygit \
+    "https://github.com/jesseduffield/lazygit/releases/download/v0.63.0/lazygit_0.63.0_linux_x86_64.tar.gz" \
+    "lazygit"
+  gh_bin_install dust \
+    "https://github.com/bootandy/dust/releases/download/v1.2.4/dust-v1.2.4-x86_64-unknown-linux-gnu.tar.gz" \
+    "dust-v1.2.4-x86_64-unknown-linux-gnu/dust"
+  gh_bin_install tldr \
+    "https://github.com/tldr-pages/tlrc/releases/download/v1.13.1/tlrc-v1.13.1-x86_64-unknown-linux-gnu.tar.gz" \
+    "tldr"
 fi
 
 # ---- fd / bat の alias 作成 (Debian/Ubuntu) ----
 # apt だと fd=fdfind, bat=batcat で入るので ~/.local/bin に symlink を張る
 if [ "$OS" = "Linux" ]; then
-  mkdir -p "$HOME/.local/bin"
   if have fdfind && ! have fd; then
     log "linking fdfind -> fd"
-    ln -sf "$(command -v fdfind)" "$HOME/.local/bin/fd"
+    ln -sf "$(command -v fdfind)" "$BIN_DIR/fd"
   fi
   if have batcat && ! have bat; then
     log "linking batcat -> bat"
-    ln -sf "$(command -v batcat)" "$HOME/.local/bin/bat"
+    ln -sf "$(command -v batcat)" "$BIN_DIR/bat"
   fi
 fi
 
-# ---- fisher (fish plugin manager) ----
-if have fish && ! fish -c "type -q fisher" 2>/dev/null; then
-  log "installing fisher"
-  fish -c "curl -sL https://raw.githubusercontent.com/jorgebucaran/fisher/main/functions/fisher.fish | source && fisher install jorgebucaran/fisher" || true
+# ---- tpm (tmux plugin manager, 両OS共通) ----
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+  log "installing tpm"
+  git clone --depth 1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+fi
+
+# ---- win32yank (WSL のみ: nvim/tmux のクリップボード連携) ----
+if [ "$OS" = "Linux" ] && grep -qi microsoft /proc/version 2>/dev/null && ! have win32yank.exe; then
+  log "installing win32yank"
+  tmp=$(mktemp -d)
+  curl -fsSL "https://github.com/equalsraf/win32yank/releases/download/v0.1.1/win32yank-x64.zip" -o "$tmp/win32yank.zip"
+  unzip -q "$tmp/win32yank.zip" -d "$tmp"
+  install -m 0755 "$tmp/win32yank.exe" "$BIN_DIR/win32yank.exe"
+  rm -rf "$tmp"
 fi
 
 log "common-post.sh done."

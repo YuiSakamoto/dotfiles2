@@ -30,6 +30,10 @@ fzf
 ripgrep
 fd-find
 bat
+zoxide
+btop
+duf
+tig
 
 # ネットワーク / 開発補助
 openssl
