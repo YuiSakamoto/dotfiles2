@@ -2,38 +2,61 @@
 #
 # 実行: ./setup.sh install  (内部で brew bundle --file=install/Brewfile)
 #
-# 元: https://github.com/YuiSakamoto/brewfile の Brewfile を再編集。
+# 旧 YuiSakamoto/brewfile リポジトリを統合済み (2026-07)。
+# brew パッケージの管理元はこのファイルに一本化する。
 # CLI は install/apt-packages.txt と揃えてあり、Linux側はそちらを見る。
 
 cask_args appdir: "/Applications"
 
 tap "homebrew/bundle"
 tap "homebrew/services"
+tap "delphinus/claude-code-hooks"
 
-# --- CLI ---
+# --- CLI 基本 ---
 brew "bash"
 brew "coreutils"
 brew "findutils"
 brew "gnu-sed"
 brew "gnu-tar"
-brew "git"
-brew "gh"
-brew "ghq"
+brew "watch"
 brew "tree"
-brew "tmux"
-brew "fish"
-brew "fzf"
-brew "neovim"
-brew "jq"
-brew "ripgrep"
-brew "fd"
-brew "bat"
-brew "peco"
-brew "starship"
 brew "curl"
 brew "wget"
 brew "openssl"
 brew "pkg-config"
+brew "jq"
+
+# --- Git ---
+brew "git"
+brew "gh"
+brew "ghq"
+brew "tig"
+brew "git-delta"   # git の pager (diff 表示)
+brew "lazygit"     # git TUI
+
+# --- シェル / エディタ / マルチプレクサ ---
+brew "fish"
+brew "starship"    # プロンプト
+brew "neovim"
+brew "tmux"
+brew "herdr"       # エージェント対応マルチプレクサ
+
+# --- モダン CLI ---
+brew "fzf"
+brew "ripgrep"
+brew "fd"
+brew "bat"
+brew "eza"         # ls 代替
+brew "zoxide"      # ディレクトリジャンプ (z)
+brew "atuin"       # シェル履歴 (Ctrl+R)
+brew "btop"        # top 代替
+brew "dust"        # du 代替
+brew "duf"         # df 代替
+brew "tlrc"        # tldr クライアント
+
+# --- DB ---
+brew "mycli"
+brew "libpq"
 
 # --- Runtimes / Version managers ---
 brew "mise"
@@ -44,20 +67,56 @@ brew "deno"
 # --- Cloud / Infra ---
 brew "awscli"
 brew "terraform"
+brew "tflint"
 brew "kubectl"
 brew "minikube"
+brew "docker-compose"
 
-# --- Build/graph ---
+# --- Build / graph / doc ---
 brew "graphviz"
 brew "plantuml"
+brew "marp-cli"
 
-# --- Cask (GUI) ---
-cask "wezterm"
-cask "karabiner-elements"
+# --- 通知 / hooks ---
+brew "terminal-notifier"
+brew "delphinus/claude-code-hooks/claude-code-hooks"
+
+# --- Cask: ターミナル ---
+cask "ghostty"
+cask "iterm2"
+
+# --- Cask: 開発 ---
 cask "visual-studio-code"
-cask "google-cloud-sdk"
-cask "firefox"
-cask "notion"
+cask "docker-desktop"
+cask "dbeaver-community"
+cask "insomnia"
+cask "ngrok"
+cask "gcloud-cli"
+
+# --- Cask: ユーティリティ ---
+cask "raycast"            # ランチャー (clipboard/window管理も担う)
+cask "karabiner-elements"
+cask "bartender"
 cask "1password"
+cask "1password-cli"
+
+# --- Cask: ドキュメント / 知識 ---
+cask "notion"
+cask "notion-calendar"
+cask "obsidian"
+cask "kindle"
+cask "anki"
+cask "zotero"
+
+# --- Cask: コミュニケーション / 言語 ---
 cask "discord"
-cask "docker"
+cask "deepl"
+cask "grammarly-desktop"
+
+# --- Cask: ブラウザ ---
+cask "firefox"
+cask "google-chrome"
+
+# --- Cask: フォント ---
+cask "font-hackgen-nerd"      # 日本語対応 Nerd Font (starship/eza/LazyVim のアイコン表示に必要)
+cask "font-noto-sans-cjk-jp"
