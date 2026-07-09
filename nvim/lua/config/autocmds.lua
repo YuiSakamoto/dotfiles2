@@ -1,0 +1,1 @@
+-- 追加の autocmd はここに書く (LazyVim のデフォルト autocmd は自動で読み込まれる)
