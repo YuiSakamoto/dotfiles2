@@ -1,45 +1,10 @@
-###
-### peco settings
-###
+# fish 全体設定
+# プロンプト(starship)・履歴(atuin)・ジャンプ(zoxide)の初期化は tools.fish 参照
 
-function fish_user_key_bindings
-  bind \cr peco_select_history
-end
+# ghq リポジトリ選択 (Ctrl+G) のセレクタ
+set -gx GHQ_SELECTOR fzf
 
-
-###
-### bobthefish default variables
-###
-
-set -g theme_display_git yes
-#     set -g theme_display_git_dirty no
-set -g theme_display_git_untracked yes
-#     set -g theme_display_git_ahead_verbose yes
-#     set -g theme_display_git_dirty_verbose yes
-#     set -g theme_display_git_stashed_verbose yes
-#     set -g theme_display_git_master_branch yes
-#     set -g theme_git_worktree_support yes
-#     set -g theme_display_vagrant yes
-set -g theme_display_docker_machine yes
-#     set -g theme_display_k8s_context yes
-set -g theme_display_hg no
-#     set -g theme_display_virtualenv no
-#     set -g theme_display_ruby no
-#     set -g theme_display_user ssh
-#     set -g theme_display_hostname ssh
-#     set -g theme_display_vi yes
-#     set -g theme_display_nvm yes
-#     set -g theme_avoid_ambiguous_glyphs yes
-set -g theme_powerline_fonts yes
-#     set -g theme_nerd_fonts yes
-#     set -g theme_show_exit_status yes
-#     set -g default_user your_normal_user
-#     set -g theme_color_scheme dark
-set -g fish_prompt_pwd_dir_length 8
-set -g theme_project_dir_length 8
-set -g theme_newline_cursor yes
-set GHQ_SELECTOR peco
-# OpenAI API key should be set in ~/.config/fish/conf.d/secrets.fish (not tracked in git)
+# secrets は ~/.config/fish/conf.d/secrets.fish に置く (git 追跡外)
 
 # Claude Code Hooks: Obsidian保存先
 set -gx CLAUDE_OBSIDIAN_VAULT "$HOME/src/github.com/YuiSakamoto/obsidian/private/Claude Code"

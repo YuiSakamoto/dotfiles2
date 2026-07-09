@@ -8,9 +8,6 @@ alias kg="kubectl get"
 alias kd="kubectl describe"
 alias kcx='kubectx'
 
-# open intellij
-alias ij='open -b com.jetbrains.intellij'
-
 # nvim
 alias vi='nvim'
 alias v='vi'
@@ -47,3 +44,14 @@ alias tf="terraform"
 
 # claude
 alias cl='claude'
+
+# モダンCLI (未導入なら素の ls 等のまま)
+if type -q eza
+    alias ls='eza --icons'
+    alias ll='eza -l --icons --git'
+    alias la='eza -la --icons --git'
+    alias lt='eza --tree --icons --level=2'
+end
+if type -q lazygit
+    alias lg='lazygit'
+end
