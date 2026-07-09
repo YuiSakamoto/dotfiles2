@@ -25,6 +25,7 @@ brew "wget"
 brew "openssl"
 brew "pkg-config"
 brew "jq"
+brew "shellcheck"  # doctor / 編集hookが使用
 
 # --- Git ---
 brew "git"

@@ -79,7 +79,7 @@ WSL固有の注意:
 
 - 通知音・デスクトップ通知は出ません（`notify-*.sh` が `osascript` 不在を検知して静かに無効化されるため）
 - Homebrew は不要です。`./setup.sh install` は `install/apt-packages.txt` を使って `apt-get install` します
-- apt に無いツール（starship, atuin, gh 等）は `install/common-post.sh` で別途導入されます
+- apt に無いツール（starship, atuin 等）は `install/common-post.sh` で別途導入されます。`gh` は Debian 12 / Ubuntu 23.04+ の公式リポジトリにあるため `install/apt-packages.txt` から通常の `apt-get install` で入ります
 - 新ツール（eza / delta / lazygit / dust / tlrc 等）は `install/common-post.sh` が GitHub releases から `x86_64` 向けバイナリを取得して `~/.local/bin` に導入します（`arm64` 等の非対応アーキテクチャでは自動スキップ）
 - tpm（tmux plugin manager）は `install/common-post.sh` が `~/.tmux/plugins/tpm` に git clone します（macOS/Linux 共通）
 - WSL では nvim/tmux のクリップボード連携用に win32yank も `install/common-post.sh` が導入します

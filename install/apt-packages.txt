@@ -35,6 +35,12 @@ btop
 duf
 tig
 
+# GitHub CLI (Debian 12 / Ubuntu 23.04+ の公式リポジトリに収録)
+gh
+
+# shellcheck (doctor / 編集hookが使用)
+shellcheck
+
 # ネットワーク / 開発補助
 openssl
 gnupg

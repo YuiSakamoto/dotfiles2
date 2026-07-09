@@ -4,11 +4,6 @@ if status is-interactive
         /opt/homebrew/bin/brew shellenv | source
     end
 
-    # starship prompt
-    if type -q starship
-        starship init fish | source
-    end
-
     # mise (runtime manager) — path.fish で activate 済みだが念のため
     if type -q mise; and not set -q __mise_activated
         mise activate fish | source

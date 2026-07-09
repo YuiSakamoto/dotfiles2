@@ -31,6 +31,23 @@ gh_bin_install() {
   rm -rf "$tmp"
 }
 
+# GitHub release の zip からバイナリ1つを ~/.local/bin に入れるヘルパー
+# $1: コマンド名, $2: ダウンロードURL, $3: zip 内のバイナリパス
+gh_bin_install_zip() {
+  local name="$1" url="$2" path_in_zip="$3" tmp
+  have "$name" && return 0
+  if [ "$ARCH" != "x86_64" ]; then
+    log "skip $name (unsupported arch: $ARCH)"
+    return 0
+  fi
+  log "installing $name"
+  tmp=$(mktemp -d)
+  curl -fsSL "$url" -o "$tmp/pkg.zip"
+  unzip -q "$tmp/pkg.zip" -d "$tmp"
+  install -m 0755 "$tmp/$path_in_zip" "$BIN_DIR/$name"
+  rm -rf "$tmp"
+}
+
 # ---- starship (プロンプト) ----
 # apt には無いので公式スクリプトで。brew 側は Brewfile 済。
 if [ "$OS" = "Linux" ] && ! have starship; then
@@ -68,6 +85,9 @@ if [ "$OS" = "Linux" ]; then
   gh_bin_install tldr \
     "https://github.com/tldr-pages/tlrc/releases/download/v1.13.1/tlrc-v1.13.1-x86_64-unknown-linux-gnu.tar.gz" \
     "tldr"
+  gh_bin_install_zip ghq \
+    "https://github.com/x-motemen/ghq/releases/download/v1.10.1/ghq_linux_amd64.zip" \
+    "ghq_linux_amd64/ghq"
 fi
 
 # ---- fd / bat の alias 作成 (Debian/Ubuntu) ----
