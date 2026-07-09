@@ -85,7 +85,7 @@ link_home() {
 link_config() {
   local targets=(fish nvim starship.toml mise herdr)
   if [ "$OS" = "Darwin" ]; then
-    targets+=(karabiner wezterm)
+    targets+=(karabiner)
   fi
   for t in "${targets[@]}"; do
     link "$DOTFILES_DIR/$t" "$HOME/.config/$t"

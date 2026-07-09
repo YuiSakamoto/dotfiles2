@@ -74,7 +74,7 @@ check_symlink ".tmux.conf" "$HOME/.tmux.conf" "$REPO_DIR/.tmux.conf"
 section "symlink 検査 (\$HOME/.config)"
 config_targets=(fish nvim starship.toml mise herdr)
 if [ "$OS" = "Darwin" ]; then
-  config_targets+=(karabiner wezterm)
+  config_targets+=(karabiner)
 fi
 for t in "${config_targets[@]}"; do
   check_symlink ".config/$t" "$HOME/.config/$t" "$REPO_DIR/$t"
@@ -96,6 +96,14 @@ claude_items=(CLAUDE.md agents skills scripts settings.json mcp-setup.sh .env.ex
 for item in "${claude_items[@]}"; do
   check_symlink ".claude/$item" "$HOME/.claude/$item" "$REPO_DIR/.claude/$item"
 done
+
+# 廃止済み設定の残骸検査
+if [ -L "$HOME/.config/wezterm" ]; then
+  warn "廃止済みの wezterm symlink が残っています: rm ~/.config/wezterm を推奨"
+fi
+if [ -e "$HOME/.Brewfile" ]; then
+  warn "旧 brewfile リポジトリ由来の ~/.Brewfile が残っています: 削除を推奨 (管理は install/Brewfile に一本化済み)"
+fi
 
 # --- 秘密情報検査 -------------------------------------------------------
 section "秘密情報検査"
@@ -165,7 +173,7 @@ fi
 
 # --- ツール検査 ---------------------------------------------------------
 section "ツール検査"
-tools=(brew mise fish nvim starship jq shellcheck gh)
+tools=(brew mise fish nvim starship jq shellcheck gh fzf tmux atuin zoxide eza delta lazygit)
 for t in "${tools[@]}"; do
   if command -v "$t" >/dev/null 2>&1; then
     ok "$t が見つかりました ($(command -v "$t"))"
@@ -173,6 +181,15 @@ for t in "${tools[@]}"; do
     warn "$t が見つかりません"
   fi
 done
+
+# .gitconfig が pager=delta を要求するため、delta 欠如は warn でなく fail とする
+if git config --file "$REPO_DIR/.gitconfig" core.pager 2>/dev/null | grep -q delta; then
+  if command -v delta >/dev/null 2>&1; then
+    ok "git pager (delta) が利用可能です"
+  else
+    fail "gitconfig が pager=delta を指定していますが delta が見つかりません (git diff が壊れます)"
+  fi
+fi
 
 # --- サマリ ---------------------------------------------------------
 section "サマリ"
