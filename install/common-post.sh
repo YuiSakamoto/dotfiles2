@@ -88,6 +88,9 @@ if [ "$OS" = "Linux" ]; then
   gh_bin_install_zip ghq \
     "https://github.com/x-motemen/ghq/releases/download/v1.10.1/ghq_linux_amd64.zip" \
     "ghq_linux_amd64/ghq"
+  gh_bin_install hunk \
+    "https://github.com/modem-dev/hunk/releases/download/v0.17.0/hunkdiff-linux-x64.tar.gz" \
+    "hunkdiff-linux-x64/hunk"
 fi
 
 # ---- fd / bat の alias 作成 (Debian/Ubuntu) ----

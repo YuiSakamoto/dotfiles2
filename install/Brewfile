@@ -34,6 +34,7 @@ brew "ghq"
 brew "tig"
 brew "git-delta"   # git の pager (diff 表示)
 brew "lazygit"     # git TUI
+brew "hunk"        # レビュー向け diff ビューア (エージェントの変更確認)
 
 # --- シェル / エディタ / マルチプレクサ ---
 brew "fish"
