@@ -6,28 +6,32 @@ Fish shellの設定ファイルとカスタマイズ内容です。
 
 ```
 fish/
-├── conf.d/          # 設定ファイル（自動読み込み）
-│   ├── alias.fish   # エイリアス定義
-│   └── path.fish    # PATH設定
-├── config.fish      # メイン設定ファイル
-├── fish_variables   # fish変数
-└── functions/       # カスタム関数
+├── conf.d/                    # 設定ファイル（自動読み込み）
+│   ├── alias.fish             # エイリアス定義
+│   ├── config.fish            # GHQ_SELECTOR等の環境変数
+│   ├── ghq_key_bindings.fish  # Ctrl+G キーバインド (ghq×fzf)
+│   ├── mise.fish              # mise (asdf互換のランタイム管理)
+│   ├── path.fish               # PATH設定
+│   ├── secrets.fish            # シークレット系の環境変数 (git 追跡外)
+│   └── tools.fish              # starship/atuin/zoxide の初期化
+├── config.fish                # メイン設定ファイル (brew shellenv/starship/mise)
+├── fish_variables              # fish変数
+└── functions/                   # カスタム関数
 ```
 
 ## 主な機能
 
-### テーマ
+### プロンプト
 
-**bobthefish** テーマを使用
-- Powerlineフォント対応
-- Gitステータス表示
-- 実行時間表示
-- エラーステータス表示
+**[starship](https://starship.rs/)** を使用（旧 bobthefish テーマは廃止）
+- Nerd Font 対応（HackGen Nerd Font 推奨）
+- Gitステータス・言語バージョン・k8sコンテキスト・実行時間を表示
+- 設定は リポジトリルートの `starship.toml`（`~/.config/starship.toml` に symlink）
 
 ### キーバインディング
 
-- `Ctrl+R`: peco連携の履歴検索
-- `Ctrl+X`: pecoでプロセスを選択してkill
+- `Ctrl+R`: [atuin](https://atuin.sh/) によるインクリメンタルな履歴検索（上矢印キーの挙動は変更しない）
+- `Ctrl+G`: [ghq](https://github.com/x-motemen/ghq) × fzf でリポジトリを検索して移動 (`__ghq_repository_search`)
 
 ### エイリアス
 
@@ -42,6 +46,12 @@ kd            # kubectl describe
 kcx           # kubectx
 tf            # terraform
 gcl           # gcloud
+```
+
+#### モダンCLI（未導入環境では元のコマンドのまま動作）
+```bash
+ls, ll, la, lt  # eza（アイコン・git status表示）
+lg              # lazygit
 ```
 
 #### Git関連
@@ -59,30 +69,23 @@ tm            # tmux
 tma           # tmux attach
 tma0-2        # tmux attach -t 0-2
 tml           # tmux list-sessions
-tpt           # tmux_pane_title（新機能）
+tpt           # tmux_pane_title
 ```
 
 #### その他
 ```bash
-ij            # IntelliJ IDEA起動
 less          # less -r（カラー対応）
-du, df        # 人間可読形式
+du, df        # 人間可読形式（du -h / df -h）
 duh           # du -h ./ --max-depth=1
-claude        # Claude Code（プロジェクト単位）
+cl            # Claude Code
 ```
 
 ## カスタム関数
 
-### peco_select_history
-- `Ctrl+R`で起動
-- インクリメンタルな履歴検索
-- 選択したコマンドを実行
+### fkill
+- fzf でプロセス一覧から選択して kill する
 
-### peco_kill
-- `Ctrl+X`で起動
-- プロセス一覧から選択してkill
-
-### tmux_pane_title（新機能）
+### tmux_pane_title (`tpt`)
 tmuxのペインにタイトルを設定
 ```bash
 # タイトル設定
@@ -100,34 +103,26 @@ bd proj  # /Users/name/projects へ移動
 bd my    # /Users/name/projects/myapp へ移動
 ```
 
+### __ghq_repository_search
+`Ctrl+G` にバインドされた ghq × fzf のリポジトリ検索。選択したリポジトリのローカルパスへ `cd` する。
+
 ## PATH設定
 
-以下のパスが自動的に追加されます：
-- `/usr/local/bin`
-- `$HOME/bin`
-- `$HOME/.local/bin`
-- 各種開発ツールのパス（gcloud、cargo等）
+`conf.d/path.fish` で以下を自動的に追加します：
+- `$HOME/.local/bin`, `$HOME/bin`, `$HOME/go/bin`
+- mise でアクティベートされたランタイムの PATH
+- macOS (Apple Silicon) では `/opt/homebrew/bin` 等
 
 ## プラグイン管理
 
-**Fisher**を使用してプラグインを管理：
-
-```bash
-# プラグインのインストール
-fisher install <プラグイン名>
-
-# インストール済みプラグイン一覧
-fisher list
-```
-
-### 主要プラグイン
-- oh-my-fish/theme-bobthefish
-- jethrokuan/z（ディレクトリジャンプ）
-- 0rax/fish-bd（親ディレクトリ移動）
+Fisher は廃止しました。モダンCLIツールの初期化は `conf.d/tools.fish` で行い、未導入の環境でも `type -q` によるガードでエラーになりません（starship / atuin / zoxide）。
 
 ## Tips
 
 ### z コマンド（ディレクトリジャンプ）
+
+[zoxide](https://github.com/ajeetdsouza/zoxide) を使用（旧 `jethrokuan/z` プラグインは廃止）:
+
 ```bash
 # 過去に訪れたディレクトリに素早く移動
 z proj      # projectsディレクトリへ
@@ -161,12 +156,11 @@ echo /usr/local/bin/fish | sudo tee -a /etc/shells
 chsh -s /usr/local/bin/fish
 ```
 
-### Powerlineフォントが表示されない
-Powerline対応フォントをインストール：
+### プロンプトのアイコンが表示されない (starship)
+Nerd Font 対応フォントをインストールし、ターミナルのフォント設定を変更してください：
 ```bash
 # Homebrew経由
-brew tap homebrew/cask-fonts
-brew install --cask font-hack-nerd-font
+brew install --cask font-hackgen-nerd
 ```
 
 ### 設定が反映されない

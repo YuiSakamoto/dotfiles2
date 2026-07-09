@@ -1047,3 +1047,5 @@ git commit -m "docs: モダナイズ後のツール構成にREADME/CLAUDE.mdを�
 - 動作が安定したら `brew bundle cleanup --file=install/Brewfile` で不要パッケージ(peco, asdf, goenv, tfenv, hub, aicommits, wezterm 等)を実機から掃除
 - 旧 dein キャッシュ削除: `rm -rf ~/.cache/dein`
 - GitHub 上で YuiSakamoto/brewfile を Archive
+- `brew install --cask --adopt docker-desktop`(sudo が必要なため手動でインストール)
+- 新規環境で tmux プラグインが自動導入されない場合は、tmux上で `prefix + I` を実行して tpm に手動インストールさせる

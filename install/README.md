@@ -8,7 +8,7 @@
 | --- | --- |
 | `Brewfile` | macOS 用。`brew bundle --file=install/Brewfile` で使用。 |
 | `apt-packages.txt` | Debian/Ubuntu/WSL 用。`#` コメントと空行を無視してパッケージ名を読む。 |
-| `common-post.sh` | OS共通の後処理。starship / mise / peco / fisher など、パッケージマネージャにない or 古いものを公式ルートで導入する。 |
+| `common-post.sh` | OS共通の後処理。starship / mise / atuin / eza / delta / lazygit / dust / tlrc / tpm / win32yank など、パッケージマネージャにない or 古いものを公式ルートで導入する。 |
 
 ## 方針
 

@@ -28,8 +28,8 @@ The repository uses Fish shell with various plugins and configurations:
 
 - Custom aliases defined in `fish/conf.d/alias.fish`
 - Path configurations in `fish/conf.d/path.fish`
-- Theme: bobthefish with powerline fonts
-- Key bindings: `Ctrl+R` for history search with peco
+- Prompt: starship (HackGen Nerd Font)
+- Key bindings: `Ctrl+R`: atuin / `Ctrl+G`: ghq repo search (fzf)
 
 ### Development Environment
 
@@ -45,9 +45,8 @@ The repository structure follows a modular approach:
 
 - Each tool's configuration is contained in its own directory
 - Fish shell configurations are split into multiple files under `conf.d/` for organization
-- Neovim uses dein.vim for plugin management with configurations in TOML files
+- Neovim is LazyVim-based (lazy.nvim + Lua, see nvim/lua/)
 - Karabiner configurations for macOS keyboard customization
-- WezTerm configuration for terminal emulator
 
 ## Important Notes from .cursorrules
 

@@ -33,7 +33,7 @@ cd dotfiles2
 
 macOS のみ:
 
-- `~/.config/karabiner/`, `~/.config/wezterm/`
+- `~/.config/karabiner/`
 
 既存ファイルは `~/dotfiles-backup-<timestamp>/` に退避されます。既に正しい symlink ならスキップ (冪等)。
 
@@ -41,7 +41,8 @@ macOS のみ:
 
 - **macOS**: [`install/Brewfile`](install/Brewfile) — `brew bundle` 互換
 - **Linux/WSL**: [`install/apt-packages.txt`](install/apt-packages.txt) — `apt-get install` 用リスト (コメント可)
-- **共通後処理**: [`install/common-post.sh`](install/common-post.sh) — starship / mise / peco / fisher など、パッケージマネージャだけでは足りないものを導入
+- **共通後処理**: [`install/common-post.sh`](install/common-post.sh) — starship / mise / atuin / eza / delta / lazygit / dust / tlrc / tpm など、パッケージマネージャだけでは足りないものを導入
+- 旧 [`YuiSakamoto/brewfile`](https://github.com/YuiSakamoto/brewfile) リポジトリは統合済み (2026-07)。今後は本リポジトリの `install/Brewfile` のみを更新する
 
 ## ディレクトリ構成
 
@@ -57,7 +58,6 @@ macOS のみ:
 ├── nvim/                 # Neovim
 ├── mise/                 # mise (asdf互換)
 ├── karabiner/            # Karabiner-Elements (macOS)
-├── wezterm/              # WezTerm (macOS)
 ├── bin/                  # ユーティリティスクリプト
 └── starship.toml
 ```
@@ -70,16 +70,46 @@ Claude Code 関連 (`.claude/`, `bin/dotfiles-doctor`) の対応状況:
 
 | 項目 | macOS | Linux/WSL |
 | --- | --- | --- |
-| `bin/dotfiles-doctor`（環境検証、`./setup.sh doctor`） | 対応 | 対応（karabiner/wezterm 検査は自動スキップ） |
+| `bin/dotfiles-doctor`（環境検証、`./setup.sh doctor`） | 対応 | 対応（karabiner 検査は自動スキップ） |
 | `.claude/scripts/validate-edit.sh`（構文検証hook） | 対応 | 対応（fish/shellcheck/ruff等が未導入でも自動スキップ） |
 | `.claude/scripts/notify-*.sh`（完了/入力待ち通知） | 対応 | macOS専用。`osascript` が無い環境では即終了し、hookは汚染しない |
-| `karabiner/`, `wezterm/` | 対応 | 対象外（symlink・doctor検査ともにスキップ） |
+| `karabiner/` | 対応 | 対象外（symlink・doctor検査ともにスキップ） |
 
 WSL固有の注意:
 
 - 通知音・デスクトップ通知は出ません（`notify-*.sh` が `osascript` 不在を検知して静かに無効化されるため）
 - Homebrew は不要です。`./setup.sh install` は `install/apt-packages.txt` を使って `apt-get install` します
-- apt に無いツール（peco, starship, fisher, gh 等）は `install/common-post.sh` で別途導入されます
+- apt に無いツール（starship, atuin, gh 等）は `install/common-post.sh` で別途導入されます
+- 新ツール（eza / delta / lazygit / dust / tlrc 等）は `install/common-post.sh` が GitHub releases から `x86_64` 向けバイナリを取得して `~/.local/bin` に導入します（`arm64` 等の非対応アーキテクチャでは自動スキップ）
+- **WSL 実機での動作検証は未実施**です。コードレビューと `--dry-run` によるロジック確認のみで担保しています
+
+## Fish Shell
+
+- プロンプトは [starship](https://starship.rs/)（旧 bobthefish テーマは廃止）
+- `Ctrl+R`: [atuin](https://atuin.sh/) によるインクリメンタル履歴検索
+- `Ctrl+G`: [ghq](https://github.com/x-motemen/ghq) × fzf でリポジトリ検索・移動 (`__ghq_repository_search`)
+- `z <キーワード>`: [zoxide](https://github.com/ajeetdsouza/zoxide) によるディレクトリジャンプ（旧 `z`/`zoxide` プラグインは廃止）
+
+## ツール一覧
+
+モダナイズで導入した CLI ツール:
+
+| ツール | 用途 |
+| --- | --- |
+| [starship](https://starship.rs/) | シェルプロンプト（git status/言語バージョン/k8s/実行時間表示） |
+| [atuin](https://atuin.sh/) | シェル履歴の検索・同期 (`Ctrl+R`) |
+| [zoxide](https://github.com/ajeetdsouza/zoxide) | 頻度ベースのディレクトリジャンプ (`z`) |
+| [eza](https://github.com/eza-community/eza) | `ls` 代替。アイコン・git status 表示付き |
+| [bat](https://github.com/sharkdp/bat) | `cat` 代替。シンタックスハイライト・git diff表示 |
+| [fd](https://github.com/sharkdp/fd) | `find` 代替。高速・直感的なオプション |
+| [ripgrep](https://github.com/BurntSushi/ripgrep) (`rg`) | `grep` 代替。高速な再帰検索 |
+| [fzf](https://github.com/junegunn/fzf) | あいまい検索(fuzzy finder)。`Ctrl+G`/`fkill` 等で利用 |
+| [delta](https://github.com/dandavison/delta) | git diff/show 用のシンタックスハイライトpager |
+| [lazygit](https://github.com/jesseduffield/lazygit) | git の TUI クライアント (`lg`) |
+| [btop](https://github.com/aristocratos/btop) | `top` 代替のリソースモニタ |
+| [dust](https://github.com/bootandy/dust) | `du` 代替。ディスク使用量の可視化 |
+| [duf](https://github.com/muesli/duf) | `df` 代替。ディスク空き容量の可視化 |
+| [tlrc](https://github.com/tldr-pages/tlrc) (`tldr`) | コマンドの要約サンプルを表示するtldrクライアント |
 
 ## トラブルシューティング
 
