@@ -1,9 +1,22 @@
 # herdr configuration
 # tmux設定 (~/.tmux.conf) から移植
 
+onboarding = false
+
+[theme]
+name = "catppuccin"
+auto_switch = false
+
+[theme.custom]
+accent = "#eba0ac"
+
 [terminal]
-# Fish shellを使用
 default_shell = "/opt/homebrew/bin/fish"
+
+[update]
+channel = "stable"
+version_check = true
+manifest_check = true
 
 [keys]
 # Prefixキー: Ctrl+T（tmuxと同じ）
@@ -62,12 +75,24 @@ workspace_picker = "prefix+w"
 rename_workspace = "prefix+shift+w"
 close_workspace = "prefix+shift+d"
 switch_workspace = "prefix+shift+1..9"
+navigate_workspace_up = "ctrl+k"
+navigate_workspace_down = "ctrl+j"
+# picker を開かず前後のワークスペースへ高速切替（デフォルト未割当）
+previous_workspace = "prefix+up"
+next_workspace = "prefix+down"
 
-# エージェントフォーカス（Alt+数字で直接選択）
+# エージェント移動
+previous_agent = "prefix+,"
+next_agent = "prefix+."
 focus_agent = "prefix+alt+1..9"
 
 # Worktree操作
 new_worktree = "prefix+shift+g"
+open_worktree = "prefix+shift+o"
+remove_worktree = "prefix+alt+d"
+
+# セッションナビゲータ（デフォルト prefix+g は下の lazygit に譲って f に移設）
+goto = "prefix+f"
 
 # ヘルプ
 help = "prefix+?"
@@ -82,14 +107,11 @@ type = "pane"
 command = "lazygit"
 
 [ui]
-# マウス操作有効（tmuxと同じ）
 mouse_capture = true
-
-# ペインボーダー表示（tmuxのpane-border-statusに相当）
 pane_borders = true
 pane_gaps = true
-
-# エージェントラベルをボーダーに表示
+confirm_close = true
+prompt_new_tab_name = false
 show_agent_labels_on_pane_borders = true
 
 [ui.toast]
