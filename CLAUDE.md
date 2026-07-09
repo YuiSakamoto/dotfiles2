@@ -19,7 +19,7 @@ This is a dotfiles repository containing personal configuration files for variou
 This script will:
 
 - Create symlinks for `.gitconfig`, `.gitignore`, and `.tmux.conf` in `$HOME`
-- Create symlinks for `fish`, `nvim`, `karabiner`, `wezterm`, and `starship.toml` in `$HOME/.config/`
+- Create symlinks for `fish`, `nvim`, `starship.toml`, `mise`, and `herdr` in `$HOME/.config/` (plus `karabiner` on macOS)
 - Create symlinks for bin utilities (like `ssm`) in `/usr/local/bin/`
 
 ### Fish Shell
