@@ -57,7 +57,7 @@ herdr --remote <ssh-host>                  # リモートの herdr へ接続
 
 - マウス: ドラッグで自動コピー、ダブルクリックでトークン抽出、Ctrl+クリックでURL開く
 - ペイン内には `HERDR_ACTIVE_PANE_ID` 等の環境変数が入る(自ペインを対象に API を叩ける)
-- 未導入: `herdr integration install claude`(状態検出がフック連携に格上げ+再起動後の会話自動レジューム。~/.claude/hooks にファイルを作るので導入時は doctor と整合確認)
+- 導入済み: claude integration(v7)。状態検出はフック連携(SessionStart 登録なので**セッション再起動後から有効**)、herdr 再起動後は会話を自動レジューム。更新は `herdr integration status --outdated-only` で確認、`install claude` で上書き
 
 ---
 
