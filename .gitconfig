@@ -15,9 +15,11 @@
   excludesfile = ~/.gitignore  # globalな.gitignoreの指定
   editor = nvim
   quotepath = false
+  pager = delta
 [merge]
   tool = vimdiff
   ff = true
+  conflictstyle = zdiff3
 [branch]
   autosetuprebase = always
 [pull]
@@ -175,3 +177,29 @@
 	defaultBranch = main
 [safe]
 	directory = /go/src/github.com/newmohq/newmo-app
+
+# --- モダンデフォルト (2026-07 モダナイズで追加) ---
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true          # n/N で diff セクション間を移動
+	line-numbers = true
+[push]
+	autoSetupRemote = true   # 初回 push で -u 不要にする
+[fetch]
+	prune = true
+[rerere]
+	enabled = true           # 解決済みコンフリクトを記憶して再適用
+[branch]
+	sort = -committerdate
+[tag]
+	sort = version:refname
+[diff]
+	algorithm = histogram
+	colorMoved = default
+[commit]
+	verbose = true           # commit メッセージ編集時に diff を表示
+[column]
+	ui = auto
+[help]
+	autocorrect = prompt

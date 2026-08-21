@@ -2,7 +2,8 @@
 #
 # 実行: ./setup.sh install  (内部で brew bundle --file=install/Brewfile)
 #
-# 元: https://github.com/YuiSakamoto/brewfile の Brewfile を再編集。
+# 旧 YuiSakamoto/brewfile リポジトリを統合済み (2026-07)。
+# brew パッケージの管理元はこのファイルに一本化する。
 # CLI は install/apt-packages.txt と揃えてあり、Linux側はそちらを見る。
 
 cask_args appdir: "/Applications"
@@ -15,42 +16,66 @@ tap "hashicorp/tap"
 # `claude-code-hooks save` / `notify` を呼ぶので、これが無いと hook が
 # command not found で失敗する。
 tap "delphinus/claude-code-hooks"
+# tflint も terraform と同様に homebrew-core から外れ、公式 tap で cask 配布に
+# なっている。
+tap "terraform-linters/tap"
 
-# --- Shell (zsh) ---
+# --- CLI 基本 ---
+brew "bash"
+brew "coreutils"
+brew "findutils"
+brew "gnu-sed"
+brew "gnu-tar"
+brew "watch"
+brew "tree"
+brew "curl"
+brew "wget"
+brew "openssl"
+brew "pkg-config"
+brew "jq"
+brew "shellcheck"  # doctor / 編集hookが使用
+
+# --- シェル (zsh) ---
 # zsh 本体は macOS 標準の /bin/zsh (5.9 = 最新リリース) を使うため入れない。
 # sheldon は zsh のプラグインマネージャ、zsh-completions は compinit 前に
 # fpath へ足す追加補完定義。
 brew "sheldon"
 brew "zsh-completions"
 
-# --- CLI ---
-brew "bash"
-brew "coreutils"
-brew "findutils"
-brew "gnu-sed"
-brew "gnu-tar"
+# --- Git ---
 brew "git"
 brew "gh"
 brew "ghq"
-brew "tree"
-brew "tmux"
+brew "tig"
+brew "git-delta"   # git の pager (diff 表示)
+brew "lazygit"     # git TUI
+brew "hunk"        # レビュー向け diff ビューア (エージェントの変更確認)
+
+# --- シェル / エディタ / マルチプレクサ ---
+# fish は zsh 移行期間中の併存用。peco は fish 側のキーバインドが使う。
 brew "fish"
-brew "fzf"
+brew "peco"
+brew "starship"    # プロンプト
 brew "neovim"
-brew "jq"
-# .claude/scripts/validate-edit.sh (編集後の構文検証hook) と dotfiles-doctor が使う
-brew "shellcheck"
+brew "tmux"
+brew "herdr"       # エージェント対応マルチプレクサ
+
+# --- モダン CLI ---
+brew "fzf"
 brew "ripgrep"
 brew "fd"
 brew "bat"
-brew "eza"
-brew "zoxide"
-brew "peco"
-brew "starship"
-brew "curl"
-brew "wget"
-brew "openssl"
-brew "pkg-config"
+brew "eza"         # ls 代替
+brew "zoxide"      # ディレクトリジャンプ (z)
+brew "atuin"       # シェル履歴 (Ctrl+R)
+brew "btop"        # top 代替
+brew "dust"        # du 代替
+brew "duf"         # df 代替
+brew "tlrc"        # tldr クライアント
+
+# --- DB ---
+brew "mycli"
+brew "libpq"
 
 # --- Runtimes / Version managers ---
 brew "mise"
@@ -63,27 +88,58 @@ brew "awscli"
 brew "hashicorp/tap/terraform"
 brew "kubectl"
 brew "minikube"
+brew "docker-compose"
 
-# --- Build/graph ---
+# --- Build / graph / doc ---
 brew "graphviz"
 brew "plantuml"
+brew "marp-cli"
 
-# --- 通知 / Claude Code hooks ---
+# --- 通知 / hooks ---
 brew "terminal-notifier"
 brew "delphinus/claude-code-hooks/claude-code-hooks"
 
-# --- Fonts ---
-# starship の git ブランチ記号や eza の --icons が要求するグリフを含む。
-# これが無いと豆腐(□)表示になる。
-cask "font-jetbrains-mono-nerd-font"
+# --- Cask: ターミナル ---
+# 普段使いは cmux (ghostty 内蔵)。ghostty 単体も設定を共有できるため入れておく。
+cask "ghostty"
+cask "iterm2"
 
-# --- Cask (GUI) ---
-cask "wezterm"
-cask "karabiner-elements"
+# --- Cask: 開発 ---
 cask "visual-studio-code"
-cask "gcloud-cli"
-cask "firefox"
-cask "notion"
-cask "1password"
-cask "discord"
 cask "docker-desktop"
+cask "dbeaver-community"
+cask "insomnia"
+cask "ngrok"
+cask "gcloud-cli"
+cask "terraform-linters/tap/tflint"
+
+# --- Cask: ユーティリティ ---
+cask "raycast"            # ランチャー (clipboard/window管理も担う)
+cask "karabiner-elements"
+cask "bartender"
+cask "1password"
+cask "1password-cli"
+
+# --- Cask: ドキュメント / 知識 ---
+cask "notion"
+cask "notion-calendar"
+cask "obsidian"           # claude-code-hooks のセッション保存先
+# cask "kindle"          # homebrew-cask から削除されたため無効化 (2026-08 時点)
+cask "anki"
+cask "zotero"
+
+# --- Cask: コミュニケーション / 言語 ---
+cask "discord"
+cask "deepl"
+cask "grammarly-desktop"
+
+# --- Cask: ブラウザ ---
+cask "firefox"
+cask "google-chrome"
+
+# --- Cask: フォント ---
+# ghostty/config が指定しているのは JetBrainsMono Nerd Font。
+# HackGen は日本語グリフを含む Nerd Font で、日本語を等幅で綺麗に出したいとき用。
+cask "font-jetbrains-mono-nerd-font"
+cask "font-hackgen-nerd"
+cask "font-noto-sans-cjk-jp"
