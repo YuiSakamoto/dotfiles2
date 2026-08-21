@@ -1,0 +1,18 @@
+# tmux のペインタイトルを設定する (引数なしでクリア)。
+# fish/functions/tmux_pane_title.fish から移植。
+emulate -L zsh
+
+if [[ -z "${TMUX:-}" ]]; then
+  print -u2 "Not in tmux session"
+  return 1
+fi
+
+if (( $# == 0 )); then
+  tmux select-pane -T ""
+  print "Pane title cleared"
+  return
+fi
+
+local title="$*"
+tmux select-pane -T "$title"
+print "Pane title set to: $title"

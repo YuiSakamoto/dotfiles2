@@ -43,6 +43,12 @@ case "$file_path" in
       out="$(fish -n "$file_path" 2>&1)" || fail "$out"
     fi
     ;;
+  *.zsh | *.zshrc | *.zshenv | *.zprofile | */zsh/functions/*)
+    # zsh/functions/ 配下の autoload 関数は拡張子を持たないためパスで拾う
+    if command -v zsh >/dev/null 2>&1; then
+      out="$(zsh -n "$file_path" 2>&1)" || fail "$out"
+    fi
+    ;;
   *.sh | *.bash)
     if command -v bash >/dev/null 2>&1; then
       out="$(bash -n "$file_path" 2>&1)" || fail "$out"

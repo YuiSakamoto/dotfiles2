@@ -15,6 +15,7 @@ set -euo pipefail
 
 DRY_RUN=0
 CMD="link"
+INSTALL_FAILED=0
 
 for arg in "$@"; do
   case "$arg" in
@@ -56,7 +57,8 @@ backup_if_exists() {
     return 0
   fi
   if [ -e "$target" ]; then
-    mkdir -p "$BACKUP_DIR"
+    # --dry-run 時に実際のディレクトリを作らないよう run を通す
+    run mkdir -p "$BACKUP_DIR"
     log "backup: $target -> $BACKUP_DIR/"
     run mv "$target" "$BACKUP_DIR/"
   fi
@@ -76,16 +78,39 @@ link() {
   fi
 }
 
+# 管理対象から外したファイルを $HOME から退去させる。
+# 実体が残っていると「消したはずの設定がまだ効いている」状態になるため、
+# link はせずバックアップへ退避だけする。
+retire() {
+  local target="$1" reason="$2"
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    run mkdir -p "$BACKUP_DIR"
+    log "retire ($reason): $target -> $BACKUP_DIR/"
+    run mv "$target" "$BACKUP_DIR/"
+  fi
+}
+
 link_home() {
   link "$DOTFILES_DIR/.gitconfig" "$HOME/.gitconfig"
   link "$DOTFILES_DIR/.gitignore" "$HOME/.gitignore"
   link "$DOTFILES_DIR/.tmux.conf" "$HOME/.tmux.conf"
+
+  # zsh は ZDOTDIR 方式。$HOME に置くのは .zshenv だけで、残りは
+  # ~/.config/zsh に集約する。
+  link "$DOTFILES_DIR/.zshenv" "$HOME/.zshenv"
+  # ZDOTDIR を設定すると ~/.zshrc は読まれなくなるので、実体が残っていたら退避する
+  if [ ! -L "$HOME/.zshrc" ]; then
+    retire "$HOME/.zshrc" "ZDOTDIR 方式では読まれないため"
+  fi
 }
 
 link_config() {
-  local targets=(fish nvim starship.toml mise herdr)
+  # zsh 一式・sheldon・ghostty・cmux もすべてディレクトリごと symlink する。
+  # ~/.config 配下に実体ファイルを置かず、repo を唯一の正とするため。
+  local targets=(zsh sheldon fish nvim starship.toml mise herdr)
   if [ "$OS" = "Darwin" ]; then
-    targets+=(karabiner wezterm)
+    # ghostty は cmux (内蔵ターミナル) の見た目設定を兼ねる
+    targets+=(karabiner ghostty cmux)
   fi
   for t in "${targets[@]}"; do
     link "$DOTFILES_DIR/$t" "$HOME/.config/$t"
@@ -119,8 +144,15 @@ install_packages() {
         log "Homebrew が見つかりません。https://brew.sh から導入してください。"
         exit 1
       fi
+      # hashicorp/tap は非公式 tap なので、trust しないと formula の読み込みが拒否される
+      if brew trust --help >/dev/null 2>&1; then
+        run brew trust --tap hashicorp/tap
+      fi
       log "brew bundle"
-      run brew bundle --file="$DOTFILES_DIR/install/Brewfile"
+      if ! run brew bundle --file="$DOTFILES_DIR/install/Brewfile"; then
+        log "brew bundle に失敗しました（後続の処理は続行します）"
+        INSTALL_FAILED=1
+      fi
       ;;
     Linux)
       if ! command -v apt-get >/dev/null 2>&1; then
@@ -131,14 +163,20 @@ install_packages() {
       pkgs=$(grep -vE '^\s*(#|$)' "$DOTFILES_DIR/install/apt-packages.txt" | tr '\n' ' ')
       run sudo apt-get update
       # shellcheck disable=SC2086
-      run sudo apt-get install -y $pkgs
+      if ! run sudo apt-get install -y $pkgs; then
+        log "apt-get install に失敗しました（後続の処理は続行します）"
+        INSTALL_FAILED=1
+      fi
       ;;
     *)
       log "unsupported OS: $OS"; exit 1 ;;
   esac
   if [ -x "$DOTFILES_DIR/install/common-post.sh" ]; then
     log "running common-post.sh"
-    run "$DOTFILES_DIR/install/common-post.sh"
+    if ! run "$DOTFILES_DIR/install/common-post.sh"; then
+      log "common-post.sh に失敗しました（後続の処理は続行します）"
+      INSTALL_FAILED=1
+    fi
   fi
 }
 
@@ -153,5 +191,11 @@ esac
 
 if [ -d "$BACKUP_DIR" ]; then
   log "backups saved to: $BACKUP_DIR"
+fi
+
+# パッケージ導入に失敗していても symlink 配置は完了させ、終了コードで失敗を伝える
+if [ "$INSTALL_FAILED" = 1 ]; then
+  log "done (パッケージ導入に失敗したものがあります)。"
+  exit 1
 fi
 log "done."

@@ -1,0 +1,58 @@
+# 親ディレクトリを名前で遡って cd する (fish-bd の zsh 版)。
+# fish/functions/bd.fish から移植。getopt + sed 依存をやめ、
+# zparseopts とパラメータ展開だけで書き直してある。
+#
+#   bd path    … 完全一致した最初の親へ (デフォルト)
+#   bd -s pa   … 前方一致
+#   bd -i P    … 大文字小文字を無視した前方一致
+#   bd         … cd .. と同じ
+emulate -L zsh
+
+local -a o_classic o_seems o_insensitive o_help
+zparseopts -D -E -- c=o_classic s=o_seems i=o_insensitive h=o_help
+
+if (( $#o_help )); then
+  cat <<'USAGE'
+Usage: bd [-c|-s|-i] <directory name>
+  -c  完全一致 (デフォルト)
+  -s  前方一致
+  -i  大文字小文字を無視した前方一致
+USAGE
+  return 0
+fi
+
+if (( $# == 0 )); then
+  cd ..
+  print -r -- "$PWD"
+  return
+fi
+
+local target="$1"
+local -a parts
+parts=(${(s:/:)PWD})
+
+local newpwd=""
+local -i i
+for (( i = $#parts; i > 0; i-- )); do
+  local name="$parts[i]"
+  local -i matched=0
+  if (( $#o_insensitive )); then
+    [[ "${name:l}" == "${target:l}"* ]] && matched=1
+  elif (( $#o_seems )); then
+    [[ "$name" == "$target"* ]] && matched=1
+  else
+    [[ "$name" == "$target" ]] && matched=1
+  fi
+  if (( matched )); then
+    newpwd="/${(j:/:)parts[1,i]}"
+    break
+  fi
+done
+
+if [[ -z "$newpwd" ]]; then
+  print -u2 "No such occurence."
+  return 1
+fi
+
+print -r -- "$newpwd"
+cd "$newpwd"

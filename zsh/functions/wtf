@@ -1,0 +1,19 @@
+# fzf で git worktree を選んで移動する。
+# fish/functions/wtf.fish から移植。
+emulate -L zsh
+
+if ! command -v fzf >/dev/null 2>&1; then
+  print -u2 "Error: fzf is not installed"
+  return 1
+fi
+
+local selected
+selected="$(git worktree list | fzf --height=40% --reverse | awk '{ print $1 }')"
+
+if [[ -z "$selected" ]]; then
+  return 0
+fi
+
+cd "$selected" || return 1
+print "Moved to: ${selected:t}"
+git branch --show-current

@@ -17,6 +17,38 @@ if [ "$OS" = "Linux" ] && ! have starship; then
   curl -fsSL https://starship.rs/install.sh | sh -s -- -y
 fi
 
+# ---- zsh compinit のためのディレクトリ権限修正 (macOS/Homebrew) ----
+# Homebrew は $(brew --prefix)/share を group(admin) 書き込み可で作る。
+# zsh の compinit はこれを "insecure directories" と判定し、対話プロンプトを
+# 出したうえで補完の初期化ごと中断してしまう (補完が丸ごと死ぬ)。
+# 所有者の権限はそのままに group の書き込みだけ落とせば解消する。
+# brew 自身は所有者として動くので install/upgrade には影響しない。
+if [ "$OS" = "Darwin" ] && have brew; then
+  brew_prefix="$(brew --prefix)"
+  for d in \
+    "$brew_prefix/share" \
+    "$brew_prefix/share/zsh" \
+    "$brew_prefix/share/zsh/site-functions" \
+    "$brew_prefix/share/zsh-completions"
+  do
+    [ -d "$d" ] || continue
+    # group 書き込み可のときだけ chmod する (毎回叩かない)
+    if [ -n "$(find "$d" -maxdepth 0 -perm -g+w 2>/dev/null)" ]; then
+      log "fixing group-writable dir for zsh compinit: $d"
+      chmod g-w "$d"
+    fi
+  done
+fi
+
+# ---- sheldon (zsh プラグインマネージャ) ----
+# apt には無いので公式インストーラで。brew 側は Brewfile 済。
+if [ "$OS" = "Linux" ] && ! have sheldon; then
+  log "installing sheldon"
+  mkdir -p "$HOME/.local/bin"
+  curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh \
+    | bash -s -- --repo rossmacarthur/sheldon --to "$HOME/.local/bin"
+fi
+
 # ---- mise (asdf 互換のランタイム管理) ----
 if ! have mise; then
   log "installing mise"

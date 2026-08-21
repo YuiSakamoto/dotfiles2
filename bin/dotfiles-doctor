@@ -70,11 +70,18 @@ section "symlink 検査 (\$HOME直下)"
 check_symlink ".gitconfig" "$HOME/.gitconfig" "$REPO_DIR/.gitconfig"
 check_symlink ".gitignore" "$HOME/.gitignore" "$REPO_DIR/.gitignore"
 check_symlink ".tmux.conf" "$HOME/.tmux.conf" "$REPO_DIR/.tmux.conf"
+# zsh は ZDOTDIR 方式。$HOME 直下にあるべきなのは .zshenv だけ。
+check_symlink ".zshenv" "$HOME/.zshenv" "$REPO_DIR/.zshenv"
+if [ -e "$HOME/.zshrc" ] || [ -L "$HOME/.zshrc" ]; then
+  fail ".zshrc: $HOME/.zshrc が残っています（ZDOTDIR 方式では読まれないため退避すべき）"
+else
+  ok ".zshrc: $HOME/.zshrc は存在しません（ZDOTDIR 方式として正しい）"
+fi
 
 section "symlink 検査 (\$HOME/.config)"
-config_targets=(fish nvim starship.toml mise herdr)
+config_targets=(zsh sheldon fish nvim starship.toml mise herdr)
 if [ "$OS" = "Darwin" ]; then
-  config_targets+=(karabiner wezterm)
+  config_targets+=(karabiner ghostty cmux)
 fi
 for t in "${config_targets[@]}"; do
   check_symlink ".config/$t" "$HOME/.config/$t" "$REPO_DIR/$t"
@@ -143,6 +150,28 @@ else
   warn "setup.sh が見つかりません"
 fi
 
+if command -v zsh >/dev/null 2>&1; then
+  zsh_fail=0
+  zsh_checked=0
+  # conf.d/*.zsh・.zshrc・.zshenv・拡張子を持たない autoload 関数をまとめて見る
+  for f in "$REPO_DIR/.zshenv" "$REPO_DIR/zsh/.zshrc" \
+    "$REPO_DIR"/zsh/conf.d/*.zsh "$REPO_DIR"/zsh/functions/*; do
+    [ -f "$f" ] || continue
+    zsh_checked=$((zsh_checked + 1))
+    if ! zsh -n "$f" 2>/dev/null; then
+      fail "${f#"$REPO_DIR"/} が zsh -n に失敗しました"
+      zsh_fail=1
+    fi
+  done
+  if [ "$zsh_checked" -eq 0 ]; then
+    warn "zsh の設定ファイルが見つかりませんでした"
+  elif [ "$zsh_fail" -eq 0 ]; then
+    ok "zsh の設定ファイル ${zsh_checked} 件はすべて zsh -n を通過しました"
+  fi
+else
+  warn "zsh コマンドが見つからないため zsh 構文検査をスキップしました"
+fi
+
 if command -v fish >/dev/null 2>&1; then
   if [ -d "$REPO_DIR/fish/conf.d" ]; then
     fish_fail=0
@@ -163,9 +192,22 @@ else
   warn "fish コマンドが見つからないため fish 構文検査をスキップしました"
 fi
 
+# --- 生成物の混入検査 ---------------------------------------------------
+# ~/.config は repo への symlink なので、ツールが設定ディレクトリに状態を
+# 書き込むと repo が汚れる。補完キャッシュや履歴の落とし穴を機械的に検出する。
+section "生成物の混入検査"
+strays="$(find "$REPO_DIR/zsh" "$REPO_DIR/cmux" "$REPO_DIR/sheldon" -maxdepth 1 \
+  \( -name '.zcompdump*' -o -name 'zcompdump*' -o -name 'history' -o -name 'plugins.lock' \) \
+  2>/dev/null)"
+if [ -z "$strays" ]; then
+  ok "repo にツールの生成物 (zcompdump / history / plugins.lock) は落ちていません"
+else
+  fail "repo にツールの生成物が落ちています（出力先の設定を見直してください）:"$'\n'"$strays"
+fi
+
 # --- ツール検査 ---------------------------------------------------------
 section "ツール検査"
-tools=(brew mise fish nvim starship jq shellcheck gh)
+tools=(brew mise zsh sheldon starship fzf zoxide eza nvim fish jq shellcheck gh)
 for t in "${tools[@]}"; do
   if command -v "$t" >/dev/null 2>&1; then
     ok "$t が見つかりました ($(command -v "$t"))"

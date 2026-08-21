@@ -1,0 +1,20 @@
+# ghq 管理下のリポジトリを fzf で選んで移動する ZLE widget (Ctrl+G)。
+# fish/functions/__ghq_repository_search.fish の置き換え。
+# fish 版は $GHQ_SELECTOR で peco/fzf を切り替えていたが、zsh 側は
+# fzf に一本化したのでセレクタの分岐は持たない。
+emulate -L zsh
+
+if ! command -v ghq >/dev/null 2>&1 || ! command -v fzf >/dev/null 2>&1; then
+  zle reset-prompt
+  return 0
+fi
+
+local selected
+selected="$(ghq list --full-path | fzf --prompt 'ghq> ' --query "$LBUFFER")"
+
+if [[ -n "$selected" ]]; then
+  BUFFER="cd ${(q)selected}"
+  zle accept-line
+else
+  zle reset-prompt
+fi

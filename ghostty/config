@@ -1,0 +1,35 @@
+# ghostty 設定
+#
+# 適用先: ~/.config/ghostty/config (dotfiles2/ghostty への symlink)
+#
+# このマシンのターミナルは cmux (com.cmuxterm.app)。cmux は ghostty を内蔵して
+# おり、ターミナル部分の見た目はこのファイルが決める。cmux 側のアプリUI
+# (サイドバー・ウィンドウ) の設定は cmux/cmux.json を見ること。
+#
+# 変更を反映するには cmux のコマンドパレットから reload_config を実行する。
+# 同梱テーマの一覧: ls /Applications/cmux.app/Contents/Resources/ghostty/themes
+
+# macOS の外観設定 (ライト/ダーク) に追従して配色を切り替える
+theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+
+# Nerd Font。install/Brewfile の font-jetbrains-mono-nerd-font で導入する。
+# これが無いと starship のブランチ記号と eza の --icons が豆腐になる。
+font-family = JetBrainsMono Nerd Font
+font-size = 13
+font-thicken = true
+
+# 行間をわずかに広げて可読性を上げる
+adjust-cell-height = 12%
+
+window-padding-x = 12
+window-padding-y = 10
+window-padding-balance = true
+
+background-opacity = 0.97
+background-blur = 20
+
+cursor-style = block
+cursor-style-blink = false
+
+mouse-hide-while-typing = true
+scrollback-limit = 10000

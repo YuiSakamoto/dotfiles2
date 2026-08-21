@@ -19,6 +19,11 @@ unzip
 git
 
 # シェル / エディタ
+# zsh がメイン。fish は移行期間中の併存用に残している。
+# sheldon (zsh プラグインマネージャ) は apt に無いので common-post.sh で導入する。
+# eza は古いディストリの apt に無いことがあるため入れていない
+# (zsh/conf.d/50-alias.zsh 側が未導入でも壊れないようガードしてある)。
+zsh
 fish
 neovim
 tmux
@@ -30,6 +35,7 @@ fzf
 ripgrep
 fd-find
 bat
+zoxide
 
 # ネットワーク / 開発補助
 openssl

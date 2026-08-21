@@ -1,0 +1,18 @@
+# kill path process: 指定ポートを掴んでいるプロセスを落とす。
+# fish/config.fish の kpp から移植。
+emulate -L zsh
+
+if (( $# != 1 )); then
+  print -u2 "Usage: kpp <port>"
+  return 1
+fi
+
+local -a pids
+pids=(${(f)"$(lsof -t -i ":$1" 2>/dev/null)"})
+
+if (( $#pids == 0 )); then
+  print -u2 "No process is listening on port $1"
+  return 1
+fi
+
+kill -9 $pids

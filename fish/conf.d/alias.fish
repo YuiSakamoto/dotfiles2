@@ -35,12 +35,14 @@ alias gd='git diff'
 
 # Docker
 alias d='docker'
-alias dc='docker-compose'
+# Docker Desktop には v1 の docker-compose バイナリが同梱されないため v2 を使う
+alias dc='docker compose'
 
 # du/df
 alias du="du -h"
 alias df="df -h"
-alias duh="du -h ./ --max-depth=1"
+# --max-depth は GNU 拡張。macOS の BSD du では動かないので -d を使う
+alias duh="du -h -d 1 ./"
 
 # terraform
 alias tf="terraform"

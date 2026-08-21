@@ -7,8 +7,21 @@
 
 cask_args appdir: "/Applications"
 
-tap "homebrew/bundle"
-tap "homebrew/services"
+# homebrew/bundle と homebrew/services は Homebrew 本体に取り込まれ、tap は廃止された。
+# terraform は BUSL 移行に伴い homebrew-core から削除されたため公式 tap から入れる。
+tap "hashicorp/tap"
+# Obsidian へのセッション自動記録と通知を行う claude-code-hooks の入手元。
+# .claude/settings.json の PostToolUse / Stop / SessionEnd hook が
+# `claude-code-hooks save` / `notify` を呼ぶので、これが無いと hook が
+# command not found で失敗する。
+tap "delphinus/claude-code-hooks"
+
+# --- Shell (zsh) ---
+# zsh 本体は macOS 標準の /bin/zsh (5.9 = 最新リリース) を使うため入れない。
+# sheldon は zsh のプラグインマネージャ、zsh-completions は compinit 前に
+# fpath へ足す追加補完定義。
+brew "sheldon"
+brew "zsh-completions"
 
 # --- CLI ---
 brew "bash"
@@ -25,9 +38,13 @@ brew "fish"
 brew "fzf"
 brew "neovim"
 brew "jq"
+# .claude/scripts/validate-edit.sh (編集後の構文検証hook) と dotfiles-doctor が使う
+brew "shellcheck"
 brew "ripgrep"
 brew "fd"
 brew "bat"
+brew "eza"
+brew "zoxide"
 brew "peco"
 brew "starship"
 brew "curl"
@@ -43,7 +60,7 @@ brew "deno"
 
 # --- Cloud / Infra ---
 brew "awscli"
-brew "terraform"
+brew "hashicorp/tap/terraform"
 brew "kubectl"
 brew "minikube"
 
@@ -51,13 +68,22 @@ brew "minikube"
 brew "graphviz"
 brew "plantuml"
 
+# --- 通知 / Claude Code hooks ---
+brew "terminal-notifier"
+brew "delphinus/claude-code-hooks/claude-code-hooks"
+
+# --- Fonts ---
+# starship の git ブランチ記号や eza の --icons が要求するグリフを含む。
+# これが無いと豆腐(□)表示になる。
+cask "font-jetbrains-mono-nerd-font"
+
 # --- Cask (GUI) ---
 cask "wezterm"
 cask "karabiner-elements"
 cask "visual-studio-code"
-cask "google-cloud-sdk"
+cask "gcloud-cli"
 cask "firefox"
 cask "notion"
 cask "1password"
 cask "discord"
-cask "docker"
+cask "docker-desktop"

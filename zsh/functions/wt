@@ -1,0 +1,79 @@
+# git worktree のラッパー。サブコマンドを wtg / wtf / wtr へ振り分ける。
+# fish/functions/wt.fish から移植。
+emulate -L zsh
+
+if (( $# == 0 )); then
+  cat <<'USAGE'
+Usage: wt <command> [args]
+Commands:
+  goto, g <name>    - worktree へ移動
+  add, a <name>     - worktree を作成
+  list, l           - worktree 一覧
+  remove, rm <name> - worktree を削除
+  root, r           - リポジトリのルートへ移動
+  fzf, f            - fzf で worktree を選んで移動
+USAGE
+  return 1
+fi
+
+local subcommand="$1"
+shift
+
+case "$subcommand" in
+  goto|g)
+    if (( $# == 0 )); then
+      print -u2 "Usage: wt goto <worktree-name>"
+      return 1
+    fi
+    wtg "$@"
+    ;;
+
+  add|a)
+    if (( $# == 0 )); then
+      print -u2 "Usage: wt add <branch-name> [path]"
+      return 1
+    fi
+    local branch_name="$1"
+    local git_root
+    git_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+      print -u2 "Error: Not in a git repository"
+      return 1
+    }
+    if (( $# >= 2 )); then
+      git worktree add "$2" -b "$branch_name"
+    else
+      git worktree add "$git_root/.git/worktrees/$branch_name" -b "$branch_name"
+    fi
+    ;;
+
+  list|l)
+    git worktree list
+    ;;
+
+  remove|rm)
+    if (( $# == 0 )); then
+      print -u2 "Usage: wt remove <worktree-name>"
+      return 1
+    fi
+    local worktree_path
+    worktree_path="$(git worktree list | awk -v n="$1" '$1 ~ "/" n "$" { print $1; exit }')"
+    if [[ -z "$worktree_path" ]]; then
+      print -u2 "Worktree not found: $1"
+      return 1
+    fi
+    git worktree remove "$worktree_path"
+    ;;
+
+  root|r)
+    wtr
+    ;;
+
+  fzf|f)
+    wtf
+    ;;
+
+  *)
+    print -u2 "Unknown command: $subcommand"
+    return 1
+    ;;
+esac

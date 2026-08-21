@@ -1,0 +1,37 @@
+# sheldon (zsh プラグインマネージャ) の定義
+#
+# 適用先: ~/.config/sheldon/plugins.toml (dotfiles2/sheldon への symlink)
+# プラグインの実体と plugins.lock は ~/.local/share/sheldon 配下に置かれるため
+# repo は汚れない。
+#
+# 読み込みは zsh/conf.d/20-plugins.zsh の `eval "$(sheldon source)"`。
+# ここの記述順がそのまま source 順になる。
+#
+# 更新: sheldon lock --update
+
+shell = "zsh"
+
+[templates]
+# zsh-defer 経由で遅延ロードするためのテンプレート。
+# プロンプト表示に不要なプラグインをここに回して起動を速く保つ。
+defer = "{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}"
+
+# defer テンプレートを使う側より先に読む必要がある
+[plugins.zsh-defer]
+github = "romkatv/zsh-defer"
+
+# タブ補完を fzf のポップアップにする。
+# compinit の後に読まれる必要があるので遅延させない。
+[plugins.fzf-tab]
+github = "Aloxaf/fzf-tab"
+
+# 入力中に履歴から候補をグレー表示する (fish の autosuggestion 相当)
+[plugins.zsh-autosuggestions]
+github = "zsh-users/zsh-autosuggestions"
+apply = ["defer"]
+
+# コマンドラインの構文ハイライト (fish の syntax highlighting 相当)。
+# 全 widget 定義後に読む必要があるため defer が都合がよい。
+[plugins.fast-syntax-highlighting]
+github = "zdharma-continuum/fast-syntax-highlighting"
+apply = ["defer"]

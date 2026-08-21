@@ -23,6 +23,15 @@ personal.mdc
 # Fish shell generated files
 fish/fish_variables
 
+# zsh / sheldon / cmux の生成物
+# ~/.config は repo への symlink なので、ツールが設定ディレクトリへ書き込むと
+# ここに落ちてくる。出力先は ~/.cache・~/.local 側へ逃がしてあるが保険として。
+zsh/.zcompdump*
+zsh/zcompdump*
+zsh/history
+sheldon/plugins.lock
+cmux/*.local.json
+
 # Secrets
 fish/conf.d/secrets.fish
 

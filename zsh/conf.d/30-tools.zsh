@@ -1,0 +1,46 @@
+# 外部ツールのシェル統合。未導入の環境でも落ちないよう全てガードする。
+
+# --- fzf ---
+# オプションは widget を張る前に export しておく。
+export FZF_DEFAULT_OPTS="--height=60% --layout=reverse --border --info=inline"
+if command -v fd >/dev/null 2>&1; then
+  export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+  export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+fi
+if command -v bat >/dev/null 2>&1; then
+  export FZF_CTRL_T_OPTS="--preview 'bat --style=numbers --color=always --line-range=:200 {}'"
+fi
+
+# Ctrl+R (履歴), Ctrl+T (ファイル), Alt+C (cd) を提供する。
+# fish 時代の peco_select_history + bind \cr の置き換え。
+if command -v fzf >/dev/null 2>&1; then
+  source <(fzf --zsh)
+
+  # Ctrl+T は cmux のプレフィックスキー (tmux 時代からの手癖) に明け渡す。
+  # cmux が握るのでシェルまで届かないはずだが、届いた場合に fzf が
+  # 反応しないよう明示的に外し、ファイル挿入は Ctrl+O へ移す。
+  bindkey -r '^T'
+  bindkey '^o' fzf-file-widget
+fi
+
+# --- zoxide ---
+# fish の z プラグイン (conf.d/z.fish + __z*.fish、約 210 行) の置き換え。
+# --cmd z で `z <部分文字列>` / `zi` (対話選択) のキー操作を維持する。
+# DB は ~/.local/share/zoxide に置かれる。
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init zsh --cmd z)"
+fi
+
+# --- mise (ランタイム管理) ---
+# 非対話シェルは .zshenv の shims 経由で解決するので、ここは対話時のみでよい。
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
+
+# --- starship (プロンプト) ---
+# 設定は ~/.config/starship.toml。fish 時代からそのまま流用している。
+# プロンプトを最後に初期化して、他のツールの precmd より後段に置く。
+if command -v starship >/dev/null 2>&1; then
+  eval "$(starship init zsh)"
+fi

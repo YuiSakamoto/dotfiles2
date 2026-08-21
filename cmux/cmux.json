@@ -1,0 +1,69 @@
+{
+  "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
+  "schemaVersion": 1,
+  "app": {
+    "appearance": "system"
+  },
+  "terminal": {
+    "adaptiveDefaultTheme": true
+  },
+  "sidebarAppearance": {
+    "matchTerminalBackground": true,
+    "tintOpacity": 0.12
+  },
+  "workspaceColors": {
+    "indicatorStyle": "leftRail"
+  },
+  "shortcuts": {
+    "bindings": {
+      "splitRight": [
+        "ctrl+t",
+        "shift+\\"
+      ],
+      "splitDown": [
+        "ctrl+t",
+        "-"
+      ],
+      "focusLeft": [
+        "ctrl+t",
+        "h"
+      ],
+      "focusDown": [
+        "ctrl+t",
+        "j"
+      ],
+      "focusUp": [
+        "ctrl+t",
+        "k"
+      ],
+      "focusRight": [
+        "ctrl+t",
+        "l"
+      ],
+      "toggleSplitZoom": [
+        "ctrl+t",
+        "z"
+      ],
+      "equalizeSplits": [
+        "ctrl+t",
+        "="
+      ],
+      "newSurface": [
+        "ctrl+t",
+        "c"
+      ],
+      "closeTab": [
+        "ctrl+t",
+        "x"
+      ],
+      "renameTab": [
+        "ctrl+t",
+        "r"
+      ],
+      "toggleTerminalCopyMode": [
+        "ctrl+t",
+        "["
+      ]
+    }
+  }
+}

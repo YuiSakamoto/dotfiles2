@@ -1,0 +1,12 @@
+# git リポジトリのルートへ移動する。
+# fish/functions/wtr.fish から移植。
+emulate -L zsh
+
+local git_root
+git_root="$(git rev-parse --show-toplevel 2>/dev/null)" || {
+  print -u2 "Error: Not in a git repository"
+  return 1
+}
+
+cd "$git_root" || return 1
+print "Moved to repository root: ${git_root:t}"
