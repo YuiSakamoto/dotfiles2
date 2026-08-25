@@ -1,0 +1,63 @@
+# 早見表 (docs/SHORTCUTS.md) を引く。キーバインドは Ctrl+X ? (40-keybind.zsh)。
+#
+#   cheat            節を fzf で選んで表示 (fzf が無ければ全文)
+#   cheat -a         全文をページャで
+#   cheat <キーワード>  該当行を節名つきで抽出
+#
+# 早見表の実体はこのリポジトリの docs/SHORTCUTS.md。~/.config/zsh は repo への
+# symlink なので、ZDOTDIR を実パスに解決してから1階層上を見る (:A で解決)。
+emulate -L zsh
+
+local doc="${${ZDOTDIR:-$HOME/.config/zsh}:A:h}/docs/SHORTCUTS.md"
+if [[ ! -r "$doc" ]]; then
+  print -u2 "cheat: 早見表が見つかりません: $doc"
+  return 1
+fi
+
+# 表示に使うコマンドを決める。glow > bat > cat の順。
+local -a render
+if command -v glow >/dev/null 2>&1; then
+  render=(glow -)
+elif command -v bat >/dev/null 2>&1; then
+  render=(bat --language=markdown --style=plain --color=always)
+else
+  render=(cat)
+fi
+
+case "$1" in
+  -a|--all)
+    $render < "$doc" | ${PAGER:-less} -R
+    return
+    ;;
+  "")
+    # 節 (## 見出し) を選んで、その節だけ表示する
+    if ! command -v fzf >/dev/null 2>&1; then
+      $render < "$doc" | ${PAGER:-less} -R
+      return
+    fi
+    local heading
+    heading="$(grep -n '^## ' "$doc" | fzf --prompt 'cheat> ' --with-nth=2.. --delimiter=: \
+      --preview "sed -n \"\$(cut -d: -f1 <<< {}),+60p\" ${(q)doc}" --preview-window=right,70%)"
+    [[ -z "$heading" ]] && return 0
+    local start=${heading%%:*}
+    # 次の ## 見出しの手前までを切り出す
+    awk -v s="$start" 'NR==s{p=1;print;next} p&&/^## /{exit} p' "$doc" \
+      | $render | ${PAGER:-less} -R
+    return
+    ;;
+  *)
+    # キーワード検索。直前の ## 見出しを覚えておいて、どの節の話かを添える。
+    # index() による部分一致にしているのは、`cheat Ctrl+T` のように
+    # 正規表現のメタ文字を含む語をそのまま渡せるようにするため。
+    awk -v pat="$*" '
+      BEGIN { pat = tolower(pat) }
+      /^## / { section = substr($0, 4); next }
+      section == "" { next }   # 最初の見出しより前 (前書き) は対象外
+      index(tolower($0), pat) {
+        if (section != last) { print "\n\033[1;36m## " section "\033[0m"; last = section }
+        print
+      }
+    ' "$doc"
+    return
+    ;;
+esac

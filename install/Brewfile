@@ -72,6 +72,7 @@ brew "btop"        # top 代替
 brew "dust"        # du 代替
 brew "duf"         # df 代替
 brew "tlrc"        # tldr クライアント
+brew "glow"        # Markdown ビューア (zsh の cheat が早見表の表示に使う)
 
 # --- DB ---
 brew "mycli"
