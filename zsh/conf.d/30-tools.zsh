@@ -24,6 +24,21 @@ if command -v fzf >/dev/null 2>&1; then
   bindkey '^o' fzf-file-widget
 fi
 
+# --- atuin (シェル履歴) ---
+# fzf の履歴 widget を置き換える。SQLite に全履歴を貯め、実行ディレクトリ・
+# 終了コード・実行時間つきで検索できる。
+#
+# fzf 統合より **後** に読むこと。`fzf --zsh` が Ctrl+R に張った
+# fzf-history-widget を、ここで atuin の widget に上書きするため。
+#
+# --disable-up-arrow: ↑ は素の履歴移動のまま残す。atuin に渡すと直前の
+# コマンドを ↑ 1回で呼び出す手癖が壊れるため。atuin の絞り込みを ↑ でも
+# 使いたくなったらこのフラグを外す。
+# 既存の zsh 履歴の取り込みは初回のみ手動で `atuin import auto`。
+if command -v atuin >/dev/null 2>&1; then
+  eval "$(atuin init zsh --disable-up-arrow)"
+fi
+
 # --- zoxide ---
 # fish の z プラグイン (conf.d/z.fish + __z*.fish、約 210 行) の置き換え。
 # --cmd z で `z <部分文字列>` / `zi` (対話選択) のキー操作を維持する。

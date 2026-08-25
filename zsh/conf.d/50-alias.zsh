@@ -13,6 +13,9 @@ alias vi='nvim'
 alias v='nvim'
 
 # --- git ---
+if command -v lazygit >/dev/null 2>&1; then
+  alias lg='lazygit'
+fi
 alias g='git'
 alias gi='git'
 alias gs='git status -s -b'

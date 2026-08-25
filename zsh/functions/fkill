@@ -1,0 +1,17 @@
+# fzf でプロセスを選んで kill する。fish/functions/fkill.fish から移植。
+# ポート番号で狙い撃ちする kpp とは役割が違い、こちらは名前が曖昧なとき用。
+# Tab で複数選択できる (-m)。
+emulate -L zsh
+
+if ! command -v fzf >/dev/null 2>&1; then
+  print -u2 "fkill: fzf が見つかりません"
+  return 1
+fi
+
+local -a pids
+pids=(${(f)"$(ps -ef | sed 1d | fzf -m --header='[kill process]' | awk '{print $2}')"})
+
+# 選択せずに抜けた場合は何もしない
+(( $#pids == 0 )) && return 0
+
+kill -9 $pids

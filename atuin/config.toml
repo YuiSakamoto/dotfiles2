@@ -1,0 +1,35 @@
+# atuin (シェル履歴) の設定
+#
+# 初期化は zsh/conf.d/30-tools.zsh (`atuin init zsh --disable-up-arrow`)。
+# 履歴 DB とキーは ~/.local/share/atuin 側に置かれるので、この設定
+# ディレクトリを repo へ symlink しても生成物は落ちてこない。
+
+## Enter で即実行はしない。
+## fish 時代の peco_select_history / fzf の履歴 widget と同じく
+## 「選ぶ → コマンドラインに入る → 目視して自分で実行」の手順を保つ。
+## 即実行に戻したければ true にする (atuin の既定は true)。
+enter_accept = false
+
+## 検索モード: fzf 風の絞り込み構文が使える
+## 'word 完全一致 / ^prefix 先頭 / suffix$ 末尾 / !word 除外
+search_mode = "fuzzy"
+
+## 既定は全ホスト・全ディレクトリ横断。TUI 内の Ctrl+R で
+## global → host → session → directory と切り替えられる。
+filter_mode = "global"
+
+## 画面を占有しないインライン表示にする
+style = "compact"
+inline_height = 20
+show_preview = true
+
+## 同期サーバは使わない (ローカル専用)
+auto_sync = false
+update_check = false
+
+## 履歴に残したくないコマンド。
+## 正規表現。行頭からのマッチではないので ^ を明示する。
+history_filter = [
+  "^\\s",              # 先頭スペース始まりは記録しない (HIST_IGNORE_SPACE 相当)
+  "^\\S*(PASSWORD|TOKEN|SECRET|API_KEY)\\S*=",
+]

@@ -1,21 +1,57 @@
+# starship プロンプト設定
+# Nerd Font (HackGen Nerd) 前提
+
 command_timeout = 2000
 scan_timeout = 50
-
-[git_status]
-disabled = true
-[git_state]
-disabled = true
-[git_metrics]
-disabled = true
 
 [character]
 error_symbol = "[❯](bold red)"
 success_symbol = "[❯](bold green)"
 
+[username]
+style_user = "white bold"
+style_root = "black bold"
+format = "[$user🌱]($style) "
+disabled = false
+show_always = true
+
 [directory]
 truncation_length = 100
 truncate_to_repo = false
 truncation_symbol = "…/"
+
+[git_branch]
+symbol = " "
+
+# モダナイズで有効化: 変更あり/ahead-behind をプロンプトに表示
+[git_status]
+disabled = false
+
+[git_state]
+disabled = false
+
+[cmd_duration]
+min_time = 2000
+format = "took [$duration](bold yellow) "
+
+# --- 言語バージョン (プロジェクト内でのみ表示される) ---
+[nodejs]
+format = "via [ $version](bold green) "
+
+[golang]
+format = "via [ $version](bold cyan) "
+
+[python]
+format = "via [ $version](bold blue) "
+
+[rust]
+format = "via [ $version](bold red) "
+
+# --- インフラ文脈 ---
+[kubernetes]
+disabled = false
+format = 'on [⎈ $context(\($namespace\))](bold blue) '
+detect_files = ["k8s", "Chart.yaml", "skaffold.yaml"]
 
 [aws]
 format = 'on [$symbol($profile )(\($region\) )]($style)'
@@ -24,21 +60,11 @@ style = "bold blue"
 [aws.region_aliases]
 ap-northeast-1 = "jp"
 
+[docker_context]
+format = "via [🐋 $context](blue bold)"
+
 [custom.arch]
 command = "uname -m"
 when = """ test $(uname -m) = "x86_64" """
 style = "bold yellow"
 format = "[$output]($style)"
-
-[docker_context]
-format = "via [🐋 $context](blue bold)"
-
-[git_branch]
-symbol = " "
-
-[username]
-style_user = "white bold"
-style_root = "black bold"
-format = "[$user🌱]($style) "
-disabled = false
-show_always = true

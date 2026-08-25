@@ -107,7 +107,7 @@ link_home() {
 link_config() {
   # zsh 一式・sheldon・ghostty・cmux もすべてディレクトリごと symlink する。
   # ~/.config 配下に実体ファイルを置かず、repo を唯一の正とするため。
-  local targets=(zsh sheldon fish nvim starship.toml mise herdr)
+  local targets=(zsh sheldon atuin fish nvim starship.toml mise herdr)
   if [ "$OS" = "Darwin" ]; then
     # ghostty は cmux (内蔵ターミナル) の見た目設定を兼ねる
     targets+=(karabiner ghostty cmux)

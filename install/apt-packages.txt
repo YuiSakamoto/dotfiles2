@@ -6,8 +6,8 @@
 # 置き換え方針:
 # - Brewfile の CLI 相当のみ。GUI/cask/fonts は除外。
 # - GNU coreutils 系は Linux は元々 GNU なので不要。
-# - apt に無い / 新しい版が欲しいもの (peco, starship, fisher, gh 等) は
-#   install/common-post.sh で別ルート導入する。
+# - apt に無い / 新しい版が欲しいもの (starship, atuin, eza, delta, lazygit,
+#   dust, tlrc 等) は install/common-post.sh で別ルート導入する。
 
 # 基本ビルドツール
 build-essential
@@ -19,11 +19,6 @@ unzip
 git
 
 # シェル / エディタ
-# zsh がメイン。fish は移行期間中の併存用に残している。
-# sheldon (zsh プラグインマネージャ) は apt に無いので common-post.sh で導入する。
-# eza は古いディストリの apt に無いことがあるため入れていない
-# (zsh/conf.d/50-alias.zsh 側が未導入でも壊れないようガードしてある)。
-zsh
 fish
 neovim
 tmux
@@ -36,6 +31,15 @@ ripgrep
 fd-find
 bat
 zoxide
+btop
+duf
+tig
+
+# GitHub CLI (Debian 12 / Ubuntu 23.04+ の公式リポジトリに収録)
+gh
+
+# shellcheck (doctor / 編集hookが使用)
+shellcheck
 
 # ネットワーク / 開発補助
 openssl

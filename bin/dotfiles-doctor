@@ -79,7 +79,7 @@ else
 fi
 
 section "symlink 検査 (\$HOME/.config)"
-config_targets=(zsh sheldon fish nvim starship.toml mise herdr)
+config_targets=(zsh sheldon atuin fish nvim starship.toml mise herdr)
 if [ "$OS" = "Darwin" ]; then
   config_targets+=(karabiner ghostty cmux)
 fi
@@ -207,7 +207,8 @@ fi
 
 # --- ツール検査 ---------------------------------------------------------
 section "ツール検査"
-tools=(brew mise zsh sheldon starship fzf zoxide eza nvim fish jq shellcheck gh)
+tools=(brew mise zsh sheldon starship fzf atuin zoxide eza delta lazygit hunk
+  ghq tmux nvim fish jq shellcheck gh)
 for t in "${tools[@]}"; do
   if command -v "$t" >/dev/null 2>&1; then
     ok "$t が見つかりました ($(command -v "$t"))"
@@ -215,6 +216,24 @@ for t in "${tools[@]}"; do
     warn "$t が見つかりません"
   fi
 done
+
+# .gitconfig が pager=delta を要求するため、delta 欠如は warn でなく fail とする。
+# delta が無いと git diff / log / show が軒並みエラーになり git 自体が使えなくなる。
+if git config --file "$REPO_DIR/.gitconfig" core.pager 2>/dev/null | grep -q delta; then
+  if command -v delta >/dev/null 2>&1; then
+    ok "git pager (delta) が利用可能です"
+  else
+    fail "gitconfig が pager=delta を指定していますが delta が見つかりません (git diff が壊れます)"
+  fi
+fi
+
+# .tmux.conf 末尾の `run '~/.tmux/plugins/tpm/tpm'` は tpm 本体を必要とする。
+# 無い場合でも tmux は起動するがプラグインが読まれないため warn 止まり。
+if [ -d "$HOME/.tmux/plugins/tpm" ]; then
+  ok "tpm (tmux plugin manager) が導入されています"
+else
+  warn "tpm が未導入です (install/common-post.sh で導入されます)"
+fi
 
 # --- サマリ ---------------------------------------------------------
 section "サマリ"
