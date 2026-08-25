@@ -3,6 +3,7 @@ name: test-reviewer
 description: テスト品質を評価。カバレッジ、テスト設計、エッジケースの網羅性を確認
 tools: Read, Grep, Glob, Bash
 model: sonnet
+memory: user
 ---
 
 テストエンジニアとして、テストの品質と網羅性を評価する。

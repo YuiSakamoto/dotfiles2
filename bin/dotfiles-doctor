@@ -54,10 +54,15 @@ check_symlink() {
   if [ -L "$target" ]; then
     local actual_src
     actual_src="$(readlink "$target")"
-    if [ "$actual_src" = "$expected_src" ]; then
-      ok "$label: $target -> $expected_src"
-    else
+    if [ "$actual_src" != "$expected_src" ]; then
       fail "$label: $target のリンク先が想定と異なる (actual: $actual_src, expected: $expected_src)"
+    elif [ ! -e "$target" ]; then
+      # symlink は張られているがリンク先の実体が無い状態。
+      # リポジトリからファイルを消しただけだとここに落ちる。symlink の
+      # 存在だけを見ていると ok と誤判定するため、実体の有無も確かめる。
+      fail "$label: $target はリンク切れです (リンク先 $expected_src が存在しません)"
+    else
+      ok "$label: $target -> $expected_src"
     fi
   elif [ -e "$target" ]; then
     fail "$label: $target は symlink ではなく実体ファイル/ディレクトリです"
@@ -99,7 +104,7 @@ else
   warn ".claude: $HOME/.claude が存在しません"
 fi
 
-claude_items=(CLAUDE.md agents skills scripts settings.json mcp-setup.sh .env.example)
+claude_items=(CLAUDE.md agents skills scripts settings.json .env.example)
 for item in "${claude_items[@]}"; do
   check_symlink ".claude/$item" "$HOME/.claude/$item" "$REPO_DIR/.claude/$item"
 done

@@ -29,7 +29,7 @@ cd dotfiles2
   設定本体は `~/.config/zsh/` に集約している
 - `~/.config/zsh/`, `~/.config/sheldon/`, `~/.config/atuin/`, `~/.config/fish/`,
   `~/.config/nvim/`, `~/.config/mise/`, `~/.config/herdr/`, `~/.config/starship.toml`
-- `~/.claude/` 以下の `CLAUDE.md`, `agents/`, `skills/`, `scripts/`, `settings.json`, `mcp-setup.sh`, `.env.example`
+- `~/.claude/` 以下の `CLAUDE.md`, `agents/`, `skills/`, `scripts/`, `settings.json`, `.env.example`
   - `credentials.json`, `sessions/`, `projects/` 等のランタイム状態は**触らない**
 - `~/.local/bin/` 以下のユーティリティ
   - `~/.local/bin` が `PATH` に入っている必要あり (zsh は `.zshenv`、fish は `path.fish` で追加済み)

@@ -11,7 +11,7 @@
 
 ## 開発環境
 
-- **Shell**: Fish shell (`/opt/homebrew/bin/fish`)
+- **Shell**: zsh (`/bin/zsh`、ZDOTDIR 方式で設定は `~/.config/zsh`)
 - **Editor**: Neovim（`vi`, `v` でエイリアス）
 - **Version Manager**: mise (asdf互換)
 - **OS**: macOS (Apple Silicon)
@@ -48,6 +48,12 @@ Conventional Commits形式を使う: `feat:` / `fix:` / `docs:` / `style:` / `re
 - `/reviews-fix` - PRのレビューコメントに対応する
 - `/workflow-fix` - 失敗した GitHub Actions を調査・修正する
 - `/cleanup-mcp` - MCPサーバーのゾンビプロセスを掃除する
+- `/dotfiles-doctor` - dotfiles の設定変更後に `./setup.sh doctor` で検証ループを回す
+
+## レビューと学習
+
+- 大きめ・重要な変更は、完了報告の前に codex plugin で別モデルのクロスレビューを1周する
+- 同じ指摘をユーザーから2回受けたら、再発防止の1行を CLAUDE.md（グローバルかプロジェクトの適切な方）へ追記することを提案する
 
 ## 参照リソース
 

@@ -46,11 +46,9 @@ nvim/.netrwhist
 !.claude/CLAUDE.md
 !.claude/README.md
 !.claude/agents/
-!.claude/commands/
 !.claude/skills/
 !.claude/scripts/
 !.claude/settings.json
-!.claude/mcp-setup.sh
 !.claude/.env.example
 
 # herdr ランタイムファイル

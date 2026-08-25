@@ -16,6 +16,7 @@
       "Bash(mise *)",
       "Bash(afplay *)",
       "Bash(./setup.sh)",
+      "Bash(./setup.sh *)",
       "Bash(shellcheck *)",
       "Bash(gh *)",
       "Bash(uv *)",
@@ -27,13 +28,19 @@
       "Bash(npx *)",
       "Bash(yarn *)",
       "Bash(bun *)",
-      "Read(.env*)",
-      "Read(**/.env*)",
       "Read(**/*.key)",
       "Read(**/*.pem)",
       "Read(~/.claude/.credentials.json)",
       "Read(//**/.ssh/**)",
-      "Read(//**/.aws/**)"
+      "Read(//**/.aws/**)",
+      "Read(.env)",
+      "Read(**/.env)",
+      "Read(**/.env.local)",
+      "Read(**/.env.*.local)",
+      "Read(**/.env.production)",
+      "Read(**/.env.development)",
+      "Read(**/.env.staging)",
+      "Read(**/.env.test)"
     ]
   },
   "model": "claude-fable-5[1m]",
@@ -68,15 +75,18 @@
         ]
       }
     ],
-    "PostToolUse": [
+    "PreToolUse": [
       {
+        "matcher": "Bash",
         "hooks": [
           {
             "type": "command",
-            "command": "claude-code-hooks save"
+            "command": "claude-code-hooks gh-guard"
           }
         ]
-      },
+      }
+    ],
+    "PostToolUse": [
       {
         "matcher": "Edit|Write",
         "hooks": [
@@ -154,7 +164,7 @@
       }
     }
   },
-  "otelHeadersHelper": "/Users/yui.sakamoto/.claude/scripts/dd-otel-headers.sh",
+  "otelHeadersHelper": "sh -c \"$HOME/.claude/scripts/dd-otel-headers.sh\"",
   "language": "japanese",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,

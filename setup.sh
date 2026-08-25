@@ -120,7 +120,7 @@ link_config() {
 link_claude() {
   # ~/.claude 以下のランタイム状態 (credentials, sessions, projects 等) を
   # 巻き込まないよう、リポジトリで管理する個別ファイル/ディレクトリだけを symlink する。
-  local items=(CLAUDE.md agents skills scripts settings.json mcp-setup.sh .env.example)
+  local items=(CLAUDE.md agents skills scripts settings.json .env.example)
   run mkdir -p "$HOME/.claude"
   for item in "${items[@]}"; do
     link "$DOTFILES_DIR/.claude/$item" "$HOME/.claude/$item"

@@ -17,12 +17,14 @@
 │   ├── workflow-fix/SKILL.md
 │   ├── cleanup-mcp/SKILL.md
 │   │   └── cleanup-mcp.sh    # cleanup-mcpスキルが呼び出す補助スクリプト
+│   ├── dotfiles-doctor/SKILL.md
 │   └── humanizer/SKILL.md
 ├── scripts/                  # hookから呼ばれる補助スクリプト
+│   ├── validate-edit.sh        # PostToolUse hook（編集後の構文検証）
 │   ├── notify-completion.sh    # Stop hook（完了通知）
 │   ├── notify-waiting-input.sh # Notification hook（入力待ち通知）
 │   └── dd-otel-headers.sh      # OTelヘッダー生成（個人用）
-└── mcp-setup.sh               # MCPサーバー初期セットアップ
+└── .env.example               # hook用環境変数のテンプレート
 ```
 
 ## スキル一覧
@@ -35,6 +37,7 @@
 | `workflow-fix` | 「CIを直して」等の発話 / `/workflow-fix` | GitHub Actionsのエラーを診断して修正 |
 | `cleanup-mcp` | 「MCPをクリーンアップして」等の発話 / `/cleanup-mcp` | MCPゾンビプロセスをクリーンアップ |
 | `humanizer` | 「AIくささを取って」等の発話 / `/humanizer` | AI文章のリライト（人間が書いたような文体に） |
+| `dotfiles-doctor` | 「環境チェックして」等の発話 / `/dotfiles-doctor` | `./setup.sh doctor` を実行し、fail を修正して再検査するまでの検証ループ |
 
 各スキルの詳細な実行手順・検証コマンドは `skills/<name>/SKILL.md` を参照。
 
@@ -46,6 +49,14 @@
 | `notify-waiting-input.sh` | Notification | ユーザー入力待ち時に通知 |
 | `validate-edit.sh` | PostToolUse (Edit\|Write) | 編集ファイルの構文チェック（fish/bash/json/py等）。失敗時は exit 2 でモデルに修正を強制 |
 | `dd-otel-headers.sh` | `otelHeadersHelper`（settings.json） | Datadog OTel送信用ヘッダーを生成（個人用） |
+
+外部バイナリの hook（brew tap `delphinus/claude-code-hooks`）:
+
+| コマンド | hook | 説明 |
+|---|---|---|
+| `claude-code-hooks save` | UserPromptSubmit / Stop / SessionEnd | 会話を Obsidian に保存（全ツール毎の保存はプロセス起動が嵩むため節目のみ） |
+| `claude-code-hooks gh-guard` | PreToolUse (Bash) | `gh` がガード対象ホストへ書き込む前に確認を挟む |
+| `claude-code-hooks notify` | PermissionRequest / SessionEnd | デスクトップ通知 |
 
 ## 環境の検証
 
@@ -80,6 +91,8 @@ cd ~/src/github.com/YuiSakamoto/dotfiles2
 2. プロジェクト設定 (`.claude/settings.json`)
 3. グローバル設定 (`~/.claude/settings.json`) ← このファイル
 
+※ dotfiles2 リポジトリ自体で作業するときは、この `settings.json` が 2 と 3 の両方として読まれる（plugins が user / project 両スコープに登録されて見えるのはこのため。実害はない）。
+
 ## MCPサーバーの管理
 
 ```bash
@@ -91,10 +104,9 @@ claude mcp add <name> -s project -- <command>
 
 # 一覧確認
 claude mcp list
-
-# 初期セットアップスクリプト
-~/.claude/mcp-setup.sh
 ```
+
+現在ローカル定義の MCP サーバーは使っておらず、claude.ai 側のマネージドコネクタ（Google Drive / Gmail / Slack / Notion / Figma / Linear 等）を利用している。
 
 ## 注意事項
 
