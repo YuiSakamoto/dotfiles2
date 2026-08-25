@@ -27,8 +27,8 @@ cd dotfiles2
 - `~/.gitconfig`, `~/.gitignore`, `~/.tmux.conf`
 - `~/.zshenv` — zsh は ZDOTDIR 方式。`$HOME` 直下に置くのはこれ1つだけで、
   設定本体は `~/.config/zsh/` に集約している
-- `~/.config/zsh/`, `~/.config/sheldon/`, `~/.config/fish/`, `~/.config/nvim/`,
-  `~/.config/mise/`, `~/.config/starship.toml`
+- `~/.config/zsh/`, `~/.config/sheldon/`, `~/.config/atuin/`, `~/.config/fish/`,
+  `~/.config/nvim/`, `~/.config/mise/`, `~/.config/herdr/`, `~/.config/starship.toml`
 - `~/.claude/` 以下の `CLAUDE.md`, `agents/`, `skills/`, `scripts/`, `settings.json`, `mcp-setup.sh`, `.env.example`
   - `credentials.json`, `sessions/`, `projects/` 等のランタイム状態は**触らない**
 - `~/.local/bin/` 以下のユーティリティ
@@ -49,7 +49,9 @@ macOS のみ:
 
 - **macOS**: [`install/Brewfile`](install/Brewfile) — `brew bundle` 互換
 - **Linux/WSL**: [`install/apt-packages.txt`](install/apt-packages.txt) — `apt-get install` 用リスト (コメント可)
-- **共通後処理**: [`install/common-post.sh`](install/common-post.sh) — starship / mise / sheldon / peco / fisher など、パッケージマネージャだけでは足りないものの導入と、zsh の `compinit` が止まらないようにする権限修正
+- **共通後処理**: [`install/common-post.sh`](install/common-post.sh) — starship / mise / sheldon / atuin / tpm / peco / fisher など、パッケージマネージャだけでは足りないものの導入と、zsh の `compinit` が止まらないようにする権限修正
+  - Linux では apt に無いもの (eza / delta / lazygit / dust / tlrc / ghq / hunk) を GitHub release から `~/.local/bin` へ入れる (x86_64 のみ)
+  - WSL では `win32yank` を入れて nvim / tmux のクリップボード連携を通す
 
 ## ディレクトリ構成
 
@@ -67,9 +69,14 @@ macOS のみ:
 │   ├── conf.d/           #   00 options / 10 completion / 20 plugins / 30 tools / 40 keybind / 50 alias
 │   └── functions/        #   autoload 関数 (1ファイル1関数)
 ├── sheldon/              # zsh プラグイン定義 (plugins.toml)
+├── atuin/                # シェル履歴 (Ctrl+R)
 ├── fish/                 # fish shell (移行期間中の併存用)
-├── nvim/                 # Neovim
+├── nvim/                 # Neovim (LazyVim ベース)
+│   ├── init.lua          #   lua/config/lazy.lua を読むだけ
+│   └── lua/              #   config/ (options・keymaps) と plugins/ (追加・上書き)
 ├── mise/                 # mise (asdf互換)
+├── herdr/                # エージェント対応マルチプレクサ
+├── .tmux.conf            # tmux (SSH 先用に維持。tpm 管理)
 ├── karabiner/            # Karabiner-Elements (macOS)
 ├── ghostty/              # ターミナルの配色・フォント (cmux が内蔵する ghostty)
 ├── cmux/                 # cmux 本体の外観とキーバインド (macOS)
@@ -91,12 +98,14 @@ Claude Code 関連 (`.claude/`, `bin/dotfiles-doctor`) の対応状況:
 | `.claude/scripts/notify-*.sh`（完了/入力待ち通知） | 対応 | macOS専用。`osascript` が無い環境では即終了し、hookは汚染しない |
 | `karabiner/`, `ghostty/`, `cmux/` | 対応 | 対象外（symlink・doctor検査ともにスキップ） |
 | `zsh/`, `sheldon/` | 対応 | 対応（sheldon は apt に無いため `common-post.sh` が導入） |
+| `atuin/`, `nvim/`, `herdr/`, `.tmux.conf` | 対応 | 対応（atuin / tpm は `common-post.sh` が導入） |
 
 WSL固有の注意:
 
 - 通知音・デスクトップ通知は出ません（`notify-*.sh` が `osascript` 不在を検知して静かに無効化されるため）
 - Homebrew は不要です。`./setup.sh install` は `install/apt-packages.txt` を使って `apt-get install` します
-- apt に無いツール（sheldon, peco, starship, fisher, gh 等）は `install/common-post.sh` で別途導入されます
+- apt に無いツール（sheldon, atuin, eza, delta, lazygit, starship, tpm, peco, fisher 等）は `install/common-post.sh` で別途導入されます
+- `win32yank` が入るので nvim / tmux のヤンクが Windows のクリップボードに繋がります
 
 ## トラブルシューティング
 
@@ -132,6 +141,26 @@ Homebrew が `$(brew --prefix)/share` を group 書き込み可で作るため�
 ```bash
 ./setup.sh install   # common-post.sh が group 書き込み権限を落とします
 ```
+
+### Neovim のプラグインが入っていない
+
+LazyVim ベースなので、初回起動時に lazy.nvim が自動で clone・同期する。
+手動でやるなら次を実行する。
+
+```bash
+nvim --headless "+Lazy! sync" +qa
+```
+
+### atuin に過去の履歴が出てこない
+
+atuin は自前の SQLite に履歴を貯めるため、導入前のコマンドは入っていない。
+初回だけ既存のシェル履歴を取り込む。
+
+```bash
+atuin import auto
+```
+
+同期サーバは使わない設定（`auto_sync = false`）なので、アカウント登録は不要。
 
 ### tmux 設定が反映されない
 
@@ -176,7 +205,37 @@ cmux shortcuts         # 設定画面のキーボードショートカットを�
 `cmux config validate` は JSONC の構文しか見ないため、間違えるとエラーも出ずに
 無反応になる。詳細は [`docs/SHORTCUTS.md`](docs/SHORTCUTS.md)。
 
+### 配色が明るくなる / OS のライトモードに引きずられる
+
+配色は**常時ダーク固定**で、赤緑の識別が落ちても読めるよう
+**赤を朱色 (#ff5f45)、緑を青緑 (#00d7a3) に置き換えて**あります
+(カラーユニバーサルデザインの考え方。詳細は [`docs/SHORTCUTS.md`](docs/SHORTCUTS.md))。
+
+明るくなる、または赤緑の置き換えが効いていないときは、次のどれかが崩れています。
+
+- `ghostty/config` の `theme` が `light:...,dark:...` の形に戻っている
+  (この書き方は OS の外観設定に追従してしまう)
+- `cmux/cmux.json` の `app.appearance` が `"system"` になっている
+- `cmux/cmux.json` の `terminal.adaptiveDefaultTheme` が `true` になっている
+  (ghostty 側の指定を無視して cmux 独自パレットが入る)
+- `ghostty/config` の `palette = N=#hex` が消えている
+
+`~/.config/cmux` はリポジトリへの symlink なので、**cmux の設定画面から変更すると
+リポジトリのファイルが直接書き換わります**。`git diff` で意図しない差分が出ていないか
+ときどき確認してください。
+
 ## ショートカット早見表
 
-zsh / cmux / git のキーバインドとエイリアスの一覧は
-[`docs/SHORTCUTS.md`](docs/SHORTCUTS.md) にまとめてあります。
+zsh / cmux / herdr / atuin / git / lazygit / Neovim / tmux のキーバインドと
+エイリアスの一覧は [`docs/SHORTCUTS.md`](docs/SHORTCUTS.md) にまとめてあります。
+調べたことを足していく育てるドキュメントなので、気付きは末尾の「追記メモ」へ。
+
+シェルからは `cheat` コマンド、または `Ctrl+X` `?` で引けます。
+
+```bash
+cheat              # 節を fzf で選んで表示
+cheat worktree     # キーワードで該当行を抽出 (節名つき)
+cheat -a           # 全文をページャで
+```
+
+表示には glow → bat → cat の順に、入っているものを使います。
