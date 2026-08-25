@@ -2,7 +2,15 @@
 
 # --- fzf ---
 # オプションは widget を張る前に export しておく。
-export FZF_DEFAULT_OPTS="--height=60% --layout=reverse --border --info=inline"
+# 配色は ghostty/config の CUD 準拠パレットに合わせる。
+# bg は -1 にして端末の背景を透かし、ポップアップが浮かずに地続きに見せる。
+# マッチ箇所 (hl) を朱色にしているのは、選択行の反転と重なっても
+# 「どこが引っかかったか」が明度差で分かるようにするため。
+export FZF_DEFAULT_OPTS="--height=60% --layout=reverse --border --info=inline
+  --color=bg:-1,bg+:#252a3d,fg:#cbd5ee,fg+:#eef3ff,gutter:-1
+  --color=hl:#ff5f45,hl+:#ff8a70,border:#4d9dff
+  --color=prompt:#5fe3ff,pointer:#ff5f45,marker:#00d7a3
+  --color=info:#7480a5,header:#ffd75f,spinner:#00d7a3"
 if command -v fd >/dev/null 2>&1; then
   export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
   export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"

@@ -184,6 +184,25 @@
 [delta]
 	navigate = true          # n/N で diff セクション間を移動
 	line-numbers = true
+
+	# --- 配色: カラーユニバーサルデザイン (CUD) 準拠 ---
+	# 赤緑色覚特性では diff の赤(削除)と緑(追加)が同系に潰れる。
+	# delta の既定色は使わず、朱色(橙寄り) と 青緑(teal) に置き換えている。
+	# 赤緑の識別が落ちても青-黄軸の差は保たれるのでこの2色は色相で分かれる。
+	minus-style                = syntax "#3d1d1a"
+	minus-emph-style           = normal "#7a3226"
+	plus-style                 = syntax "#0d2f2a"
+	plus-emph-style            = normal "#166b57"
+	# 色以外の手がかりも必ず残す。行番号を常時出し、変更行に ± を立てる。
+	line-numbers-minus-style   = "#ff5f45"
+	line-numbers-plus-style    = "#00d7a3"
+	line-numbers-zero-style    = "#7480a5"
+	file-style                 = bold "#87c0ff"
+	file-decoration-style      = "#4d9dff" ul
+	hunk-header-style          = "#ffd75f" line-number
+	hunk-header-decoration-style = "#2b2f42" box
+	zero-style                 = syntax
+	syntax-theme               = Nord
 [push]
 	autoSetupRemote = true   # 初回 push で -u 不要にする
 [fetch]

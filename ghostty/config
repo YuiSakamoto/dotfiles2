@@ -9,8 +9,53 @@
 # 変更を反映するには cmux のコマンドパレットから reload_config を実行する。
 # 同梱テーマの一覧: ls /Applications/cmux.app/Contents/Resources/ghostty/themes
 
-# macOS の外観設定 (ライト/ダーク) に追従して配色を切り替える
-theme = light:Catppuccin Latte,dark:Catppuccin Mocha
+# 常時ダーク固定。macOS の外観設定には追従させない
+# (light:...,dark:... と書くと OS がライトのとき明るい配色に切り替わってしまう)。
+theme = TokyoNight Storm
+
+# 背景は Storm より一段暗い TokyoNight Night 寄りにする。
+# 下のパレットの彩度を上げているので、背景を沈めた方が色が立つ。
+background = #16171f
+foreground = #cbd5ee
+
+# --- ANSI パレット: カラーユニバーサルデザイン (CUD) 準拠 ---
+#
+# 赤緑色覚特性では赤と緑が同系に潰れる。ターミナルは git diff の
+# 追加/削除、テストの成功/失敗など「赤 vs 緑」に意味を載せる場面が多いので、
+# 素のテーマ色は使わず次の置き換えを入れている。
+#
+#   赤 → 朱色 (vermillion, 橙寄り)   緑 → 青緑 (bluish green, teal)
+#
+# 赤緑の識別が落ちても青-黄軸の差は保たれるため、この2色は色相で分かれる。
+# さらに明度も離してあり (朱色は暗め・青緑は明るめ)、色相が完全に潰れても
+# 明暗だけで区別できる。彩度は素の TokyoNight より上げてある。
+# 8 (bright black) はコメント・補完の説明文に使われる。素のテーマだと
+# 背景とのコントラストが 3.1:1 しかなく読みづらいので 4.6:1 まで持ち上げている。
+palette = 0=#2b2f42
+palette = 1=#ff5f45
+palette = 2=#00d7a3
+palette = 3=#ffd75f
+palette = 4=#4d9dff
+palette = 5=#ef8fc9
+palette = 6=#5fe3ff
+palette = 7=#cbd5ee
+palette = 8=#7480a5
+palette = 9=#ff8a70
+palette = 10=#4dffc9
+palette = 11=#ffe694
+palette = 12=#87c0ff
+palette = 13=#ffb3de
+palette = 14=#9eefff
+palette = 15=#eef3ff
+
+# 選択範囲とカーソル。カーソルは朱色にして、背景のどこにいても一目で分かるようにする
+selection-background = #2f3a5c
+selection-foreground = #eef3ff
+cursor-color = #ff5f45
+cursor-text = #16171f
+
+# 非アクティブなペインをわずかに沈ませて、どこにフォーカスがあるか分かるようにする
+unfocused-split-opacity = 0.88
 
 # Nerd Font。install/Brewfile の font-jetbrains-mono-nerd-font で導入する。
 # これが無いと starship のブランチ記号と eza の --icons が豆腐になる。
@@ -25,8 +70,10 @@ window-padding-x = 12
 window-padding-y = 10
 window-padding-balance = true
 
-background-opacity = 0.97
-background-blur = 20
+# 背景をほぼ不透明に保つ。透過を上げると下のウィンドウが透けて
+# せっかくの暗い背景が明るく濁るため、ここは詰めすぎない。
+background-opacity = 0.95
+background-blur = 24
 
 cursor-style = block
 cursor-style-blink = false

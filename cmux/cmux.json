@@ -1,69 +1,64 @@
 {
   "$schema": "https://raw.githubusercontent.com/manaflow-ai/cmux/main/web/data/cmux.schema.json",
   "schemaVersion": 1,
+
+  // アプリUI (サイドバー・タブ・設定画面) を常時ダークにする。
+  // "system" にすると macOS がライトのとき UI だけ明るくなり、
+  // ターミナル部分 (ghostty/config で TokyoNight Storm 固定) と食い違う。
   "app": {
-    "appearance": "system"
+    "appearance": "dark"
   },
+  "browser": {
+    "theme": "dark"
+  },
+
+  // adaptiveDefaultTheme は「ghostty 側に theme 指定が無いとき」だけ
+  // cmux の管理パレットを流し込む機能。こちらは ghostty/config で
+  // TokyoNight Storm を明示しているので無効にして、配色の出所を1本にする。
   "terminal": {
-    "adaptiveDefaultTheme": true
+    "adaptiveDefaultTheme": false
   },
+
+  // サイドバーをターミナルの背景 (#16171f) に寄せて、
+  // ウィンドウ全体が一枚の暗い面に見えるようにする。
   "sidebarAppearance": {
     "matchTerminalBackground": true,
-    "tintOpacity": 0.12
+    "darkModeTintColor": "#16171f",
+    "tintOpacity": 0.22
   },
+
+  // ペインの境界。非アクティブは背景に沈め、フォーカス中だけ青 (#4d9dff) で
+  // 縁取る。色だけに頼らず「枠が出る/出ない」という形の差でも分かるようにしている。
+  "paneBorderColor": "#2b2f42",
+  "activePaneBorderColor": "#4d9dff",
+
+  "notifications": {
+    "paneFlashColor": "#5fe3ff"
+  },
+
   "workspaceColors": {
-    "indicatorStyle": "leftRail"
+    "indicatorStyle": "leftRail",
+    "selectionColor": "#2f3a5c",
+    "notificationBadgeColor": "#ff5f45"
   },
+
+  // Ctrl+T を tmux 譲りの2ストロークプレフィックスとして使う。
+  // 2打目に書けるのは「キー名」であって文字ではない点に注意
+  // (`|` は不可。US 配列では物理的に shift+\)。
   "shortcuts": {
     "bindings": {
-      "splitRight": [
-        "ctrl+t",
-        "shift+\\"
-      ],
-      "splitDown": [
-        "ctrl+t",
-        "-"
-      ],
-      "focusLeft": [
-        "ctrl+t",
-        "h"
-      ],
-      "focusDown": [
-        "ctrl+t",
-        "j"
-      ],
-      "focusUp": [
-        "ctrl+t",
-        "k"
-      ],
-      "focusRight": [
-        "ctrl+t",
-        "l"
-      ],
-      "toggleSplitZoom": [
-        "ctrl+t",
-        "z"
-      ],
-      "equalizeSplits": [
-        "ctrl+t",
-        "="
-      ],
-      "newSurface": [
-        "ctrl+t",
-        "c"
-      ],
-      "closeTab": [
-        "ctrl+t",
-        "x"
-      ],
-      "renameTab": [
-        "ctrl+t",
-        "r"
-      ],
-      "toggleTerminalCopyMode": [
-        "ctrl+t",
-        "["
-      ]
+      "splitRight": ["ctrl+t", "shift+\\"],
+      "splitDown": ["ctrl+t", "-"],
+      "focusLeft": ["ctrl+t", "left"],
+      "focusDown": ["ctrl+t", "down"],
+      "focusUp": ["ctrl+t", "up"],
+      "focusRight": ["ctrl+t", "right"],
+      "toggleSplitZoom": ["ctrl+t", "z"],
+      "equalizeSplits": ["ctrl+t", "="],
+      "newSurface": ["ctrl+t", "c"],
+      "closeTab": ["ctrl+t", "x"],
+      "renameTab": ["ctrl+t", "r"],
+      "toggleTerminalCopyMode": ["ctrl+t", "["]
     }
   }
 }
