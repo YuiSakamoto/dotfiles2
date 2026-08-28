@@ -57,6 +57,14 @@ case "$file_path" in
       out="$(shellcheck "$file_path" 2>&1)" || fail "$out"
     fi
     ;;
+  */cmux/cmux.json)
+    # cmux.json は JSONC（コメント可）なので jq では検証できない。
+    # cmux CLI の validate（対象は primary = ~/.config/cmux/cmux.json だが、
+    # この repo では symlink で同一実体）に委ねる。cmux が無い環境ではスキップ
+    if command -v cmux >/dev/null 2>&1; then
+      out="$(cmux config validate 2>&1)" || fail "$out"
+    fi
+    ;;
   *.json)
     if command -v jq >/dev/null 2>&1; then
       out="$(jq empty "$file_path" 2>&1)" || fail "$out"
