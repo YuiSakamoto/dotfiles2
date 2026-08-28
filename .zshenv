@@ -82,3 +82,6 @@ fi
 # --- Claude Code hooks ---
 # hook スクリプトが Obsidian の保存先を引くために使う。
 export CLAUDE_OBSIDIAN_VAULT="$HOME/src/github.com/YuiSakamoto/obsidian/private/Claude Code"
+
+# Unity CLI（インストーラの追記を移植性のある形に整えた。未導入マシンでは読み飛ばす）
+[ -f "$HOME/.unity/env" ] && . "$HOME/.unity/env"
