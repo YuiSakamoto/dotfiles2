@@ -41,6 +41,8 @@
 
 Conventional Commits形式を使う: `feat:` / `fix:` / `docs:` / `style:` / `refactor:` / `test:` / `chore:`
 
+- 基本はブランチを切ってドラフト PR にする（`/create-pr`）。main への直接コミット・push はユーザーが明示的に求めたときだけ
+
 ## スラッシュコマンド（`~/.claude/skills/` の Skill）
 
 - `/commit` - 会話の文脈からコミットを作る
