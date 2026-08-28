@@ -7,8 +7,20 @@ on:
 jobs:
   claude-review:
     runs-on: ubuntu-latest
+    # id-token: write は API キー未設定時の OIDC フォールバックに必要。
+    # pull-requests / issues: write が無いとレビューコメントを投稿できない
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
     steps:
       - uses: actions/checkout@v4
       - uses: anthropics/claude-code-action@v1
         with:
-          api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # input 名は anthropic_api_key（api-key は無効な入力名で、secret が渡らず
+          # OIDC フォールバック → id-token 不足で落ちていた）
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # pull_request イベントは @claude メンションが無いため、明示プロンプト必須
+          prompt: "/review"
