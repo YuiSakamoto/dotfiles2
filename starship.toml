@@ -1,70 +1,126 @@
 # starship プロンプト設定
-# Nerd Font (HackGen Nerd) 前提
+# Nerd Font (JetBrainsMono Nerd Font、ghostty/config で指定) 前提
+#
+# 2 行構成: 1 行目に文脈情報、2 行目に入力。
+# 色は ghostty/config の palette と揃えている (下の [palettes.tokyonight])。
+# ghostty 側の色を変えたらここも追従させる。
 
 command_timeout = 2000
 scan_timeout = 50
+add_newline = true
+palette = "tokyonight"
+
+# 各モジュールの format は末尾に空白を持つので、ここでは並べるだけ
+format = """
+[╭─](frame) $hostname$directory$git_branch$git_status$git_state$nodejs$golang$python$rust$kubernetes$aws$docker_context$cmd_duration$custom
+[╰─](frame) $character"""
+
+[palettes.tokyonight]
+frame = "#7480a5"    # palette 8: 枠線は主張しないグレー
+pink = "#ffb3de"     # palette 13
+mint = "#4dffc9"     # palette 10
+sky = "#9eefff"      # palette 14
+yellow = "#ffe694"   # palette 11
+salmon = "#ff8a70"   # palette 9
+blue = "#87c0ff"     # palette 12
+green = "#00d7a3"    # palette 2
 
 [character]
-error_symbol = "[❯](bold red)"
-success_symbol = "[❯](bold green)"
+success_symbol = "[❯](bold mint)"
+error_symbol = "[❯](bold salmon)"
+vimcmd_symbol = "[❮](bold sky)"
 
+# username はローカルでは情報価値が薄いので消し、ssh 接続時だけホスト名を出す
 [username]
-style_user = "white bold"
-style_root = "black bold"
-format = "[$user🌱]($style) "
-disabled = false
-show_always = true
+disabled = true
+
+[hostname]
+ssh_only = true
+format = "[🖥 $hostname](bold yellow) "
 
 [directory]
 truncation_length = 100
 truncate_to_repo = false
 truncation_symbol = "…/"
+style = "bold pink"
+format = "🏠 [$path]($style)[$read_only]($read_only_style) "
+read_only = " 🔒"
+read_only_style = "salmon"
 
 [git_branch]
 symbol = " "
+style = "bold mint"
+format = "[$symbol$branch(:$remote_branch)]($style) "
 
-# モダナイズで有効化: 変更あり/ahead-behind をプロンプトに表示
+# 変更があるときだけ ✨ を出す。記号 (!?+) は覚えないと読めないので言葉で表示する
 [git_status]
 disabled = false
+style = "yellow"
+format = "([✨ $conflicted$staged$modified$renamed$deleted$untracked$stashed$ahead_behind]($style))"
+ahead = "⇡${count} "
+behind = "⇣${count} "
+diverged = "⇡${ahead_count}⇣${behind_count} "
+conflicted = "conflict:${count} "
+staged = "staged:${count} "
+modified = "modified:${count} "
+renamed = "renamed:${count} "
+deleted = "deleted:${count} "
+untracked = "untracked:${count} "
+stashed = "stash:${count} "
 
 [git_state]
 disabled = false
+style = "bold salmon"
+format = "[\\($state( $progress_current/$progress_total)\\)]($style) "
 
 [cmd_duration]
 min_time = 2000
-format = "took [$duration](bold yellow) "
+style = "bold yellow"
+format = "⏱ [$duration]($style) "
 
 # --- 言語バージョン (プロジェクト内でのみ表示される) ---
+# アイコンは Nerd Font の devicon
 [nodejs]
-format = "via [ $version](bold green) "
+symbol = " "
+style = "bold green"
+format = "[$symbol$version]($style) "
 
 [golang]
-format = "via [ $version](bold cyan) "
+symbol = " "
+style = "bold sky"
+format = "[$symbol$version]($style) "
 
 [python]
-format = "via [ $version](bold blue) "
+symbol = " "
+style = "bold blue"
+format = "[$symbol$version]($style) "
 
 [rust]
-format = "via [ $version](bold red) "
+symbol = " "
+style = "bold salmon"
+format = "[$symbol$version]($style) "
 
 # --- インフラ文脈 ---
 [kubernetes]
 disabled = false
-format = 'on [⎈ $context(\($namespace\))](bold blue) '
+style = "bold blue"
+format = '[⎈ $context(\($namespace\))]($style) '
 detect_files = ["k8s", "Chart.yaml", "skaffold.yaml"]
 
 [aws]
-format = 'on [$symbol($profile )(\($region\) )]($style)'
-style = "bold blue"
+style = "bold yellow"
+format = '[☁️ $profile(\($region\))]($style) '
 
 [aws.region_aliases]
 ap-northeast-1 = "jp"
 
 [docker_context]
-format = "via [🐋 $context](blue bold)"
+style = "bold blue"
+format = "[🐋 $context]($style) "
 
+# Rosetta 等で x86_64 として動いているときの注意喚起
 [custom.arch]
 command = "uname -m"
 when = """ test $(uname -m) = "x86_64" """
 style = "bold yellow"
-format = "[$output]($style)"
+format = "[$output]($style) "
