@@ -54,6 +54,7 @@ nvim/.netrwhist
 # herdr ランタイムファイル
 herdr/*.log
 herdr/session.json
+herdr/.plugins.lock
 
 # Karabiner自動バックアップ
 karabiner/automatic_backups/
