@@ -40,25 +40,27 @@
     "indicatorStyle": "leftRail",
     "selectionColor": "#2f3a5c",
     "notificationBadgeColor": "#ff5f45"
-  },
-
-  // Ctrl+T を tmux 譲りの2ストロークプレフィックスとして使う。
-  // 2打目に書けるのは「キー名」であって文字ではない点に注意
-  // (`|` は不可。US 配列では物理的に shift+\)。
-  "shortcuts": {
-    "bindings": {
-      "splitRight": ["ctrl+t", "shift+\\"],
-      "splitDown": ["ctrl+t", "-"],
-      "focusLeft": ["ctrl+t", "left"],
-      "focusDown": ["ctrl+t", "down"],
-      "focusUp": ["ctrl+t", "up"],
-      "focusRight": ["ctrl+t", "right"],
-      "toggleSplitZoom": ["ctrl+t", "z"],
-      "equalizeSplits": ["ctrl+t", "="],
-      "newSurface": ["ctrl+t", "c"],
-      "closeTab": ["ctrl+t", "x"],
-      "renameTab": ["ctrl+t", "r"],
-      "toggleTerminalCopyMode": ["ctrl+t", "["]
-    }
   }
+
+  // Ctrl+T の2ストロークプレフィックスは herdr に譲って廃止（herdr 常駐化に伴う。
+  // 対話 zsh は cmux 内でも herdr に exec されるため、Ctrl+T はペイン内の herdr が受ける）。
+  // これにより分割・タブは cmux 既定の Cmd 系 (Cmd+D / Cmd+T / Cmd+W 等) が復活する。
+  // 戻すときは以下のコメントを外し、workspaceColors の閉じ括弧にカンマを付け直すこと。
+  // 2打目に書けるのは「キー名」であって文字ではない (`|` は不可、shift+\ と書く)。
+  // "shortcuts": {
+  //   "bindings": {
+  //     "splitRight": ["ctrl+t", "shift+\\"],
+  //     "splitDown": ["ctrl+t", "-"],
+  //     "focusLeft": ["ctrl+t", "left"],
+  //     "focusDown": ["ctrl+t", "down"],
+  //     "focusUp": ["ctrl+t", "up"],
+  //     "focusRight": ["ctrl+t", "right"],
+  //     "toggleSplitZoom": ["ctrl+t", "z"],
+  //     "equalizeSplits": ["ctrl+t", "="],
+  //     "newSurface": ["ctrl+t", "c"],
+  //     "closeTab": ["ctrl+t", "x"],
+  //     "renameTab": ["ctrl+t", "r"],
+  //     "toggleTerminalCopyMode": ["ctrl+t", "["]
+  //   }
+  // }
 }

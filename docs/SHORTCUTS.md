@@ -10,34 +10,26 @@
 
 ---
 
-## cmux — Ctrl+T プレフィックス
+## cmux — ガワ操作（Cmd 系）
 
-tmux の手癖をそのまま持ち込むため、`Ctrl+T` を **2ストロークのプレフィックス**にしてある
-（`Ctrl+T` を押してから次のキー）。cmux 側が `Ctrl+T` を握るので、シェルには届かない。
+`Ctrl+T` の2ストロークプレフィックスは **herdr に譲って廃止**した（バインドは
+`cmux/cmux.json` にコメントアウトで温存してあり、戻せる）。対話 zsh は cmux 内でも
+herdr に常駐するため、`Ctrl+T` はペイン内の herdr が受ける。分割・ペイン移動・
+コピーモードは herdr（次節）の手癖をそのまま使う。
 
-| キー | 動作 | アクション名 |
-| --- | --- | --- |
-| `Ctrl+T` `Shift+\` | 右に分割（`\|` を打つ手つきのまま） | `splitRight` |
-| `Ctrl+T` `-` | 下に分割 | `splitDown` |
-| `Ctrl+T` `←` `↓` `↑` `→` | 左 / 下 / 上 / 右のペインへ（1アクション1キーのため `h/j/k/l` は廃止） | `focus*` |
-| `Ctrl+T` `z` | ペインをズーム／戻す | `toggleSplitZoom` |
-| `Ctrl+T` `=` | ペインサイズを均等化 | `equalizeSplits` |
-| `Ctrl+T` `c` | 新規タブ | `newSurface` |
-| `Ctrl+T` `x` | 閉じる | `closeTab` |
-| `Ctrl+T` `r` | タブ名を変更 | `renameTab` |
-| `Ctrl+T` `[` | コピーモード | `toggleTerminalCopyMode` |
-
-> これらに割り当てたことで、既定の `Cmd+D` / `Cmd+Shift+D` / `Cmd+Opt+矢印` /
-> `Cmd+Shift+Return` / `Cmd+T` / `Cmd+W` / `Cmd+R` は**使えなくなっている**。
-> 1つのアクションに割り当てられるキーは1つだけのため。
+cmux 本体の操作は既定の Cmd 系に戻った:
+`Cmd+D`（右分割）/ `Cmd+Shift+D`（下分割）/ `Cmd+Opt+矢印`（ペイン移動）/
+`Cmd+Shift+Return`（ズーム）/ `Cmd+T`（新規タブ）/ `Cmd+W` / `Cmd+R` が復活。
+その他は「既定のまま残っているもの」の表が正。
 
 ### コピーモード内のキー（vi 風・ハードコード）
 
-`Ctrl+T` `[` で入ったあとのキーは cmux 本体にハードコードされていて、
-`cmux.json` で変更できるのは「入るキー」だけ。**tmux copy-mode-vi の既定だった
-`Space`（選択開始）と `Enter`（コピー）は効かない**（押しても無反応のまま握り
-潰される）ので、選択開始は `v`、コピーは `y` に乗り換える。
-流れ: `Ctrl+T` `[` → 移動 → `v` → 移動 → `y`。
+普段のコピーモードは herdr 側（`prefix` `[`）を使う。cmux のコピーモードは
+prefix 廃止で「入る専用キー」が無くなった（使うならコマンドパレット
+`Cmd+Shift+P` から、または cmux.json の shortcuts を復活させる）。
+入ったあとのキーは cmux 本体にハードコードされていて変更できない。
+**tmux copy-mode-vi の既定だった `Space`（選択開始）と `Enter`（コピー）は
+効かない**ので、選択開始は `v`、コピーは `y`。
 
 | キー | 動作 |
 | --- | --- |
@@ -129,6 +121,16 @@ cmux のペインは「枠が出る/出ない」という形の差でフォー�
 **Agent**（ペイン内の AI プロセスを自動検出）。エージェント状態（working / blocked /
 done / idle）はサイドバーに集約される。prefix は tmux・cmux と同じ **Ctrl+T**。
 
+**常駐方式**: 対話 zsh は起動時に herdr へ自動アタッチする
+（`zsh/conf.d/05-herdr-attach.zsh`）。**cmux でも Ghostty 単体でも、開けばそのまま
+herdr の中**（cmux の Ctrl+T バインドは廃止済みなので prefix は herdr に届く）。
+tmux 内・SSH 先・TTY なし起動だけは従来どおり素の zsh。素の zsh が欲しいときは
+`HERDR_AUTO=0 zsh`。`prefix q`（デタッチ）すると素の zsh に戻ってくる
+（セッションはサーバー側で生き続け、次にシェルを開けば復帰）。herdr の起動に
+失敗した場合も素の zsh にフォールバックするので端末が開けなくなることはない。
+複数ウィンドウから同時に開くと同一セッションのミラー表示になる（tmux と同じ。
+増殖はしない）。
+
 ### ペイン・タブ（tmux 移植分、体が覚えてる系）
 
 | キー | 動作 |
@@ -174,7 +176,8 @@ herdr --remote <ssh-host>                  # リモートの herdr へ接続
 ```
 
 - マウス: ドラッグで自動コピー、ダブルクリックでトークン抽出、Ctrl+クリックで URL を開く
-- ペイン内には `HERDR_ACTIVE_PANE_ID` 等の環境変数が入る（自ペインを対象に API を叩ける）
+- ペイン内には `HERDR_PANE_ID` / `HERDR_ENV` / `HERDR_SOCKET_PATH` 等の環境変数が入る
+  （自ペインを対象に API を叩ける。zsh の常駐ガードもこれで判定している）
 - **claude integration はマシンごとに `herdr integration install claude` が必要**
   （repo の設定ファイルには入らない）。SessionStart フックで登録されるので
   **Claude Code のセッションを開き直してから**有効になる。
@@ -192,7 +195,7 @@ herdr --remote <ssh-host>                  # リモートの herdr へ接続
 | `Ctrl+G` | ghq 管理下のリポジトリへ移動 | 自作 widget |
 | `Tab` | 補完候補を fzf のポップアップで選択 | fzf-tab |
 | `↑` | 素の履歴移動（atuin には渡していない） | zsh |
-| `Ctrl+T` | **使わない**（cmux のプレフィックス） | — |
+| `Ctrl+T` | **herdr のプレフィックス**（シェルには届かない） | herdr |
 | `Ctrl+X` `?` | この早見表を開く | 自作 widget（`cheat`） |
 | `Ctrl+W` | パスを1階層ずつ削る | `WORDCHARS` 調整 |
 | `→` / `Ctrl+F` | 履歴からのグレー候補を確定 | zsh-autosuggestions |
@@ -387,7 +390,8 @@ TUI 内: `,`/`.` ファイル移動、`[`/`]` ハンク移動、`/` ファイル
 ## tmux（SSH 先用に維持）
 
 普段は cmux / herdr を使うが、SSH 先などのために `.tmux.conf` は残してある。
-プレフィックスは `Ctrl+T` のまま（cmux の中では cmux 側が奪うため届かない）。
+プレフィックスは `Ctrl+T` のまま（ローカルの herdr と同じ手癖。SSH 先には herdr が
+いないので tmux が受ける。ローカルでは herdr が握るため tmux まで届かない）。
 プラグインは tpm 管理（`tmux-sensible` / `tmux-yank`）で、初回起動時に自動 clone される。
 
 | キー | 動作 |
