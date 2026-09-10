@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# llm — ローカルLLM CLI (local_llm_env) のランチャー。
+#
+# 実体をここに置かないのは、`llm up` がサーバー起動スクリプト serve.sh を
+# 「自分と同じディレクトリ」から探すため。本体は local_llm_env リポジトリを
+# 唯一の正とし、dotfiles 側はクローン位置の違いを吸収するだけにする。
+# 使い方は `llm cheat`、環境構築は local_llm_env の README を参照。
+set -euo pipefail
+
+candidates=()
+# クローン先が特殊な環境ではこの環境変数で明示的に上書きできるようにする
+[ -n "${LOCAL_LLM_ENV_DIR:-}" ] && candidates+=("$LOCAL_LLM_ENV_DIR")
+if command -v ghq >/dev/null 2>&1; then
+  candidates+=("$(ghq root)/github.com/YuiSakamoto/local_llm_env")
+fi
+candidates+=("$HOME/local_llm_env" "$HOME/src/local_llm_env" "$HOME/dev/local_llm_env")
+
+for d in "${candidates[@]}"; do
+  if [ -x "$d/llm" ]; then
+    exec "$d/llm" "$@"
+  fi
+done
+
+{
+  echo "llm: local_llm_env リポジトリが見つかりません。取得してください:"
+  echo "  ghq get YuiSakamoto/local_llm_env"
+  echo "  (または) git clone https://github.com/YuiSakamoto/local_llm_env ~/local_llm_env"
+  echo "別の場所にある場合は LOCAL_LLM_ENV_DIR で指定してください。"
+} >&2
+exit 127
