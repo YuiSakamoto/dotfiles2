@@ -1,0 +1,88 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-code-hooks gh-guard"
+          }
+        ]
+      }
+    ],
+    "PermissionRequest": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-code-hooks notify 'Claude Code' 'パーミッションが必要です'"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/scripts/validate-edit.sh"
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "[ -f '/Users/yui_tang/src/github.com/YuiSakamoto/dotfiles2/.codex/hooks/herdr-agent-state.sh' ] && bash '/Users/yui_tang/src/github.com/YuiSakamoto/dotfiles2/.codex/hooks/herdr-agent-state.sh' session || true",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-code-hooks save",
+            "timeout": 120,
+            "statusMessage": "Obsidian にセッションを保存中..."
+          },
+          {
+            "type": "command",
+            "command": "claude-code-hooks notify 'Claude Code' 'セッションの保存が完了しました'"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "claude-code-hooks save"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/scripts/notify-completion.sh"
+          },
+          {
+            "type": "command",
+            "command": "claude-code-hooks save"
+          }
+        ]
+      }
+    ]
+  }
+}
