@@ -11,7 +11,6 @@
       "Bash(pnpm *)",
       "Bash(pnpx *)",
       "Bash(go *)",
-      "Bash(fish -c *)",
       "Bash(brew *)",
       "Bash(mise *)",
       "Bash(afplay *)",
@@ -43,7 +42,7 @@
       "Read(**/.env.test)"
     ]
   },
-  "model": "claude-fable-5[1m]",
+  "model": "fable[1m]",
   "hooks": {
     "Notification": [
       {
@@ -180,6 +179,39 @@
   "language": "japanese",
   "tui": "fullscreen",
   "skipDangerousModePermissionPrompt": true,
+  "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "inputNeededNotifEnabled": true
+  "autoMode": {
+    "soft_deny": [
+      "$defaults",
+      "Bash(op read:*) in scopes writing outside .claude/.env or repo-tracked config — confirm before materializing secrets from 1Password"
+    ],
+    "environment": [
+      "### Org-wide",
+      "**Organization**: None configured",
+      "**Cloud provider(s)**: None configured",
+      "**Repository visibility**: PUBLIC — github.com/YuiSakamoto/dotfiles2 (any push here is publishing)",
+      "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
+      "**Secrets management**: `op read` (1Password CLI) referenced in repo; CI secret `ANTHROPIC_API_KEY` referenced by name only",
+      "**Default / protected branches**: main (default, protected per gh); no rulesets listed",
+      "**CI/CD deploy targets**: None configured",
+      "**Network posture**: None configured",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine (macOS, Apple Silicon) with open internet",
+      "**Source control**: The trusted repo (github.com/YuiSakamoto/dotfiles2) and its origin remote only — no additional orgs configured",
+      "**Trusted internal domains**: None configured",
+      "**Trusted cloud buckets**: None configured",
+      "**Key internal services**: None configured",
+      "**Internal package registry**: None configured",
+      "**Sensitive data locations & audiences**: `atuin/key`, `fish/conf.d/secrets.fish`, `.claude/.env.example` (example only — pattern `!.claude/.env.example` un-ignores it, so treat any real `.claude/.env` file it documents as sensitive), and any file matching the unusual redacted gitignore pattern; keep out of the public repo and share only with the repo owner",
+      "**Data retention / declassification**: None configured",
+      "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
+      "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
+      "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment; note `fish/completions/terraform.fish` present but no IaC target evidence beyond that",
+      "### User-specific",
+      "**Primary use of Claude Code**: personal dotfiles / development environment management (symlink-based config repo, setup scripts, shell/editor tooling)",
+      "**Trusted repo**: /Users/yui_tang/src/github.com/YuiSakamoto/dotfiles2 (origin: github.com:YuiSakamoto/dotfiles2.git) — PUBLIC, so only this repo's own work belongs here; no secrets or personal/confidential data regardless of visibility",
+      "**Org-specific CLIs**: None configured — non-standard CLIs seen in this project are personal tooling (herdr, cmux, strings, claude-code-hooks, script), not org-specific",
+      "routine under this repo's own paths (e.g. zsh/, nvim/, install/, bin/, .claude/) is the user's normal working scope"
+    ]
+  }
 }
