@@ -85,3 +85,6 @@ export CLAUDE_OBSIDIAN_VAULT="$HOME/src/github.com/YuiSakamoto/obsidian/private/
 
 # Unity CLI（インストーラの追記を移植性のある形に整えた。未導入マシンでは読み飛ばす）
 [ -f "$HOME/.unity/env" ] && . "$HOME/.unity/env"
+
+# Unity CLI
+. "/Users/yui_tang/.unity/env"
