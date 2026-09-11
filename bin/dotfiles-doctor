@@ -201,11 +201,12 @@ fi
 # ~/.config は repo への symlink なので、ツールが設定ディレクトリに状態を
 # 書き込むと repo が汚れる。補完キャッシュや履歴の落とし穴を機械的に検出する。
 section "生成物の混入検査"
-strays="$(find "$REPO_DIR/zsh" "$REPO_DIR/cmux" "$REPO_DIR/sheldon" -maxdepth 1 \
-  \( -name '.zcompdump*' -o -name 'zcompdump*' -o -name 'history' -o -name 'plugins.lock' \) \
+strays="$(find "$REPO_DIR/zsh" "$REPO_DIR/cmux" "$REPO_DIR/sheldon" "$REPO_DIR/herdr" -maxdepth 1 \
+  \( -name '.zcompdump*' -o -name 'zcompdump*' -o -name 'history' -o -name 'plugins.lock' \
+     -o -name '.zsh_sessions' -o -name 'release-notes.json' \) \
   2>/dev/null)"
 if [ -z "$strays" ]; then
-  ok "repo にツールの生成物 (zcompdump / history / plugins.lock) は落ちていません"
+  ok "repo にツールの生成物 (zcompdump / history / plugins.lock / zsh_sessions) は落ちていません"
 else
   fail "repo にツールの生成物が落ちています（出力先の設定を見直してください）:"$'\n'"$strays"
 fi

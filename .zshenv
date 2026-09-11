@@ -11,6 +11,12 @@
 # $HOME 直下に散らかさないための ZDOTDIR 方式。
 export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 
+# macOS の Apple Terminal はセッション復元ファイルを $ZDOTDIR/.zsh_sessions へ
+# 書き出す。ZDOTDIR が repo への symlink なので、そのままだと生成物が repo に
+# 落ちる。出力先は /etc/zshrc_Apple_Terminal 側で無条件に代入されていて
+# 上書きできないため、機能ごと止める（ghostty / cmux では元々使われない）。
+export SHELL_SESSIONS_DISABLE=1
+
 # PATH の重複を自動で除去する。ネストしたシェルで PATH が伸び続けるのを防ぐ。
 typeset -U path PATH fpath
 
