@@ -217,7 +217,7 @@ fi
 # --- ツール検査 ---------------------------------------------------------
 section "ツール検査"
 tools=(brew mise zsh sheldon starship fzf atuin zoxide eza delta lazygit hunk
-  ghq tmux nvim fish jq shellcheck gh)
+  ghq tmux nvim fish jq shellcheck gh ollama)
 for t in "${tools[@]}"; do
   if command -v "$t" >/dev/null 2>&1; then
     ok "$t が見つかりました ($(command -v "$t"))"

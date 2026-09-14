@@ -112,6 +112,9 @@ cask "dbeaver-community"
 cask "insomnia"
 cask "ngrok"
 cask "gcloud-cli"
+# ローカル LLM。llama.cpp は arm64 macOS 向けのビルド済みバイナリが配布されておらず
+# 使えないため ollama を使う。起動は Ollama.app、CLI は ollama run。
+cask "ollama-app"
 cask "terraform-linters/tap/tflint"
 
 # --- Cask: ユーティリティ ---
