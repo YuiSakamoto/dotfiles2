@@ -41,7 +41,9 @@
 
 Conventional Commits形式を使う: `feat:` / `fix:` / `docs:` / `style:` / `refactor:` / `test:` / `chore:`
 
-- 基本はブランチを切ってドラフト PR にする（`/create-pr`）。main への直接コミット・push はユーザーが明示的に求めたときだけ
+- 変更は基本ブランチを切って PR にする（`/create-pr`）。main への直接コミット・push は
+  ユーザーがそのセッションで明示的に求めたときだけ
+- PR はレビューを挟みたいときだけドラフトにする。それ以外は ready で出す
 
 ## スラッシュコマンド（`~/.claude/skills/` の Skill）
 
