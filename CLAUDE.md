@@ -86,3 +86,13 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 pager は delta。`.gitconfig` が `pager = delta` を指定しているので、
 **delta が無いと git diff / log / show が壊れる**（doctor が fail で検出する）。
+
+**main は GitHub のブランチ保護で `lock_branch` が有効**（読み取り専用）。
+CI が緑で必須レビューも無くても `gh pr merge` は `BLOCKED` で落ちるので、
+マージには `--admin` が要る。ロックを外す・保護設定を書き換えるのは
+公開リポジトリのセキュリティ設定の変更なので、勝手にやらず必ず確認を取る。
+
+```bash
+gh api repos/YuiSakamoto/dotfiles2/branches/main/protection   # 保護の現状
+gh pr merge <N> --rebase --delete-branch --admin              # ロックを越える
+```
